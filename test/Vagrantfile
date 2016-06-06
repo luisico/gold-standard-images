@@ -1,0 +1,11 @@
+# ENV['VAGRANT_SERVER_URL'] = "file://~/provision/boxes/artifacts"
+
+box = "CentOS-7.2.1511"
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "ebi/#{box}"
+  config.vm.box_url = "file://../artifacts/#{box}.json"
+
+  # SSH config
+  config.ssh.private_key_path = "../keys/vagrant"
+end

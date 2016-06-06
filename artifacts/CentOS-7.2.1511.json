@@ -1,0 +1,19 @@
+{
+  "name": "ebi/CentOS-7.2.1511",
+  "description": "Minimal Vagrant box for CentOS 7.2.1511 (64bits)",
+  "short_description": "CentOS-7.2.1511",
+  "versions": [
+    {
+      "version": "0.1.0",
+      "status": "active",
+      "providers": [{
+        "name": "virtualbox",
+        "url": "~/provision/boxes/artifacts/CentOS-7.2.1511-v0.1.0.box",
+        "checksum_type": "sha256",
+        "checksum": "e2d89b3781870466dceff4ef97af01434e80149aef53aaf44910367bd3c9d516"
+      }]
+    }
+  ]
+}
+
+
