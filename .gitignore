@@ -1,0 +1,6 @@
+TAGS
+*~
+.vagrant
+/tmp
+/packer_cache
+*.pyc
