@@ -1,6 +1,8 @@
 TAGS
 *~
 .vagrant
-/tmp
+
 /packer_cache
-*.pyc
+/artifacts/**/*.box
+/artifacts/**/*.ova
+/artifacts/**/*.ovf
