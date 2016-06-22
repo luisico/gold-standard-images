@@ -1,0 +1,70 @@
+{
+  "min_packer_version": "0.10.0",
+  "description": "Import a Virtualbox OVA into AWS AMI",
+
+  "variables": {
+    "namespace": "ebi",
+    "vm_name": null,
+    "version": "0.0.0",
+
+    "headless": "true",
+
+    "username": "vagrant",
+    "password": "vagrant",
+
+    "aws_region": "eu-west-1",
+    "s3_bucket": null
+  },
+
+  "builders": [
+    {
+      "type": "virtualbox-ovf",
+      "headless": "{{user `headless`}}",
+      "output_directory": "artifacts/{{user `version`}}/aws",
+      "vm_name": "{{user `vm_name`}}",
+      "format": "ova",
+
+      "source_path": "artifacts/{{user `version`}}/base/{{user `vm_name`}}.ova",
+
+      "guest_additions_mode": "disable",
+
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_timeout": "10m",
+
+      "shutdown_command": "echo '{{user `username`}}' | sudo -S shutdown -P now"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "keys/vagrant.pub",
+      "destination": "/tmp/root.pub"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo '{{user `username`}}' | {{.Vars}} sudo -E -S sh '{{.Path}}'",
+      "scripts":
+      [
+        "scripts/aws.sh",
+        "scripts/root_keys.sh",
+        "scripts/cleanup.sh",
+        "scripts/zero.sh"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type": "amazon-import",
+      "keep_input_artifact": true,
+      "region": "{{user `aws_region`}}",
+      "s3_bucket_name": "{{user `s3_bucket`}}",
+      "s3_key_name": "packer-import-{{user `vm_name`}}-{{timestamp}}.ova",
+      "tags": {
+        "Description": "Packer amazon-import {{user `vm_name`}} {{timestamp}}"
+      }
+    }
+  ]
+}

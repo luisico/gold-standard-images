@@ -1,0 +1,55 @@
+{
+  "min_packer_version": "0.10.0",
+  "description": "Create a vagrant box from a Virtualbox OVA",
+
+  "variables": {
+    "namespace": "ebi",
+    "vm_name": null,
+    "version": "0.0.0",
+
+    "headless": "true",
+
+    "username": "vagrant",
+    "password": "vagrant"
+  },
+
+  "builders": [
+    {
+      "type": "virtualbox-ovf",
+      "headless": "{{user `headless`}}",
+      "output_directory": "artifacts/{{user `version`}}/virtualbox",
+      "vm_name": "{{user `vm_name`}}",
+      "format": "ova",
+
+      "source_path": "artifacts/{{user `version`}}/base/{{user `vm_name`}}.ova",
+
+      "guest_additions_path": "/tmp/VBoxGuestAdditions.iso",
+
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_timeout": "10m",
+
+      "shutdown_command": "echo '{{user `username`}}' | sudo -S shutdown -P now"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo '{{user `username`}}' | {{.Vars}} sudo -E -S sh '{{.Path}}'",
+      "scripts": [
+        "scripts/virtualbox.sh",
+        "scripts/cleanup.sh",
+        "scripts/zero.sh"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": true,
+      "output": "artifacts/{{user `version`}}/virtualbox/{{user `vm_name`}}.box"
+    }
+  ]
+}

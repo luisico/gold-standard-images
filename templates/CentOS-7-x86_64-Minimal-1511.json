@@ -1,4 +1,5 @@
 {
+  "vm_name": "centos72",
   "os_name": "CentOS",
   "os_version": "7.2.1511",
   "iso": "CentOS-7-x86_64-Minimal-1511",
