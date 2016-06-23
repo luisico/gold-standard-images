@@ -1,7 +1,13 @@
-# Zero out space
+# Zero out space on all partitions
+
+swap_devices=$(/sbin/swapon --show=NAME --noheadings --ifexists)
 /sbin/swapoff -a
-/sbin/mkswap /dev/mapper/VG_localhost_sys-LV_swap
-dd if=/dev/zero of=/boot/EMPTY bs=1M
-rm -f /boot/EMPTY
-dd if=/dev/zero of=/EMPTY bs=1M
-rm -f /EMPTY
+for device in $swap_devices; do
+  dd if=/dev/zero of=$device bs=1M
+  /sbin/mkswap $device
+done
+
+for mount in $(findmnt --fstab --types ext4,ext3 --noheadings --raw | cut -f 1 -d' '); do
+  dd if=/dev/zero of=$mount/EMPTY bs=1M
+  rm -f $mount/EMPTY
+done
