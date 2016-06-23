@@ -58,20 +58,16 @@
 
   "provisioners": [
     {
-      "type": "file",
-      "source": "keys/vagrant.pub",
-      "destination": "/tmp/vagrant.pub"
+      "type": "ansible",
+      "playbook_file": "ansible/base.yml",
+      "sftp_command": "/usr/libexec/openssh/sftp-server -e",
+      "user": "{{user `username`}}",
+      "extra_arguments": [ "-v", "--sudo" ]
     },
     {
       "type": "shell",
       "execute_command": "echo '{{user `username`}}' | {{.Vars}} sudo -E -S sh '{{.Path}}'",
-      "environment_vars": [
-        "USER_SERVER={{user `server`}}",
-        "USER_CENTOS={{user `os_version`}}"
-      ],
       "scripts": [
-        "scripts/base.sh",
-        "scripts/vagrant.sh",
         "scripts/cleanup.sh",
         "scripts/zero.sh"
       ]

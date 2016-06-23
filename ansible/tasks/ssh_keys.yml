@@ -1,0 +1,3 @@
+---
+- name: Add authorized keys for {{user}}
+  authorized_key: user={{user}} key="{{lookup('file', '../keys/{{key | default('') or user}}.pub')}}" state=present

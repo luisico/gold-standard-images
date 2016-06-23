@@ -1,0 +1,5 @@
+---
+- hosts: all
+  tasks:
+    - include: tasks/fast_dns.yml
+    - include: tasks/ssh_keys.yml user=vagrant
