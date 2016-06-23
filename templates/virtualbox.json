@@ -35,10 +35,16 @@
 
   "provisioners": [
     {
+      "type": "ansible",
+      "playbook_file": "ansible/virtualbox.yml",
+      "sftp_command": "/usr/libexec/openssh/sftp-server -e",
+      "user": "{{user `username`}}",
+      "extra_arguments": [ "-v", "--sudo" ]
+    },
+    {
       "type": "shell",
       "execute_command": "echo '{{user `username`}}' | {{.Vars}} sudo -E -S sh '{{.Path}}'",
       "scripts": [
-        "scripts/virtualbox.sh",
         "scripts/cleanup.sh",
         "scripts/zero.sh"
       ]

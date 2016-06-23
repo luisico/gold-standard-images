@@ -1,6 +1,7 @@
 TAGS
 *~
 .vagrant
+*.retry
 
 /packer_cache
 /artifacts/**/*.box

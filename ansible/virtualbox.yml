@@ -1,0 +1,4 @@
+---
+- hosts: all
+  tasks:
+    - include: tasks/virtualbox_guest_additions.yml
