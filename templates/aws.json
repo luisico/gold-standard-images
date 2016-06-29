@@ -38,17 +38,17 @@
 
   "provisioners": [
     {
-      "type": "file",
-      "source": "keys/vagrant.pub",
-      "destination": "/tmp/root.pub"
+      "type": "ansible",
+      "playbook_file": "ansible/aws.yml",
+      "sftp_command": "/usr/libexec/openssh/sftp-server -e",
+      "user": "{{user `username`}}",
+      "extra_arguments": [ "-v", "--sudo" ]
     },
     {
       "type": "shell",
       "execute_command": "echo '{{user `username`}}' | {{.Vars}} sudo -E -S sh '{{.Path}}'",
       "scripts":
       [
-        "scripts/aws.sh",
-        "scripts/root_keys.sh",
         "scripts/cleanup.sh",
         "scripts/zero.sh"
       ]

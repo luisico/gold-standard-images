@@ -1,7 +1,12 @@
 # TODO
 - User vagrant? Different users might be needed for each artifact
+- Use EPM for repositories
 
 # Build images
+ls templates/*.yml | grep -v include.yml | while read template; do
+  ruby -ryaml -rjson -e 'puts JSON.pretty_generate(YAML.load(File.read("templates/include.yml") << ARGF.read).delete_if{|k,v| k =~ /^default_/})' < $template > ${template/yml/json}
+done
+
 vm_name=centos72
 version=0.2.0
 aws_region=eu-west-1
