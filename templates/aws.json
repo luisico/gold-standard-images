@@ -13,7 +13,8 @@
     "password": "vagrant",
 
     "aws_region": "eu-west-1",
-    "s3_bucket": null
+    "s3_bucket": null,
+    "tag": "mytag"
   },
 
   "builders": [
@@ -63,7 +64,8 @@
       "s3_bucket_name": "{{user `s3_bucket`}}",
       "s3_key_name": "packer-import-{{user `vm_name`}}-{{timestamp}}.ova",
       "tags": {
-        "Description": "Packer amazon-import {{user `vm_name`}} {{timestamp}}"
+        "Description": "Packer amazon-import {{user `vm_name`}} {{timestamp}}",
+        "Resource Group": "{{user `tag`}}"
       }
     }
   ]
