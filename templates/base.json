@@ -72,5 +72,13 @@
         "scripts/zero.sh"
       ]
     }
+  ],
+
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": true,
+      "output": "artifacts/{{user `version`}}/base/{{user `vm_name`}}.box"
+    }
   ]
 }
