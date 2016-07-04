@@ -48,7 +48,10 @@
 
       "vboxmanage": [
         [ "modifyvm", "{{.Name}}", "--memory", "512" ],
-        [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
+        [ "modifyvm", "{{.Name}}", "--cpus", "1" ],
+        [ "modifyvm", "{{.Name}}", "--usb", "off" ],
+        [ "modifyvm", "{{.Name}}", "--usbehci", "off" ],
+        [ "modifyvm", "{{.Name}}", "--audio", "none" ]
       ]
     }
   ],
