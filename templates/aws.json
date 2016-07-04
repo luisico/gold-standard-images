@@ -9,9 +9,6 @@
 
     "headless": "true",
 
-    "username": "vagrant",
-    "password": "vagrant",
-
     "aws_region": "eu-west-1",
     "s3_bucket": null,
     "tag": "mytag"
@@ -29,11 +26,11 @@
 
       "guest_additions_mode": "disable",
 
-      "ssh_username": "{{user `username`}}",
-      "ssh_password": "{{user `password`}}",
+      "ssh_username": "root",
+      "ssh_private_key_file": "keys/packer",
       "ssh_timeout": "10m",
 
-      "shutdown_command": "echo '{{user `username`}}' | sudo -S shutdown -P now"
+      "shutdown_command": "shutdown -P now"
     }
   ],
 
@@ -43,11 +40,11 @@
       "playbook_file": "ansible/aws.yml",
       "sftp_command": "/usr/libexec/openssh/sftp-server -e",
       "user": "{{user `username`}}",
-      "extra_arguments": [ "-v", "--sudo" ]
+      "extra_arguments": [ "-v" ]
     },
     {
       "type": "shell",
-      "execute_command": "echo '{{user `username`}}' | {{.Vars}} sudo -E -S sh '{{.Path}}'",
+      "execute_command": "{{.Vars}} sh '{{.Path}}'",
       "scripts":
       [
         "scripts/cleanup.sh",

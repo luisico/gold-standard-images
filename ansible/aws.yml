@@ -2,5 +2,5 @@
 - hosts: all
   tasks:
     - include: tasks/shared_ami.yml
-    - include: tasks/ssh_keys.yml user=root key=vagrant
     - include: tasks/cloud_init.yml
+    - include: tasks/reset_root.yml
