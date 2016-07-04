@@ -4,3 +4,4 @@
     - include: tasks/virtualbox_guest_additions.yml
     - include: tasks/vagrant_user.yml
     - include: tasks/ssh_keys.yml user=vagrant
+    - include: tasks/reset_root.yml
