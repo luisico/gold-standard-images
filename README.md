@@ -4,6 +4,8 @@
 - Document generation of vagrant and packer keys
 
 # Build images
+
+``` shell
 ls templates/*.yml | grep -v include.yml | while read template; do
   ruby -ryaml -rjson -e 'puts JSON.pretty_generate(YAML.load(File.read("templates/include.yml") << ARGF.read).delete_if{|k,v| k =~ /^default_/})' < $template > ${template/yml/json}
 done
@@ -23,3 +25,4 @@ packer build $opts $vars templates/virtualbox.json
 #cp artifacts/$version/aws/$vm_name.ova s3://$s3bucket/
 #aws ec2 import-image --disk-container "Format=ova,UserBucket={S3Bucket=$s3bucket,S3Key=$vm_name.ova}"
 #aws ec2 describe-import-image-tasks
+```
