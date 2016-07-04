@@ -1,1 +1,1 @@
-rootpw vagrant
+rootpw packer

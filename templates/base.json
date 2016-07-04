@@ -9,9 +9,6 @@
 
     "headless": "true",
 
-    "username": "vagrant",
-    "password": "vagrant",
-
     "iso": null,
     "os_name": null,
     "os_version": null,
@@ -38,11 +35,11 @@
       "guest_os_type": "RedHat_64",
       "guest_additions_mode": "disable",
 
-      "ssh_username": "{{user `username`}}",
-      "ssh_password": "{{user `password`}}",
+      "ssh_username": "root",
+      "ssh_password": "packer",
       "ssh_timeout": "10m",
 
-      "shutdown_command": "echo '{{user `username`}}' | sudo -S shutdown -P now",
+      "shutdown_command": "shutdown -P now",
 
       "http_directory": "",
       "boot_command": [
@@ -61,12 +58,12 @@
       "type": "ansible",
       "playbook_file": "ansible/base.yml",
       "sftp_command": "/usr/libexec/openssh/sftp-server -e",
-      "user": "{{user `username`}}",
-      "extra_arguments": [ "-v", "--sudo" ]
+      "user": "root",
+      "extra_arguments": [ "-v" ]
     },
     {
       "type": "shell",
-      "execute_command": "echo '{{user `username`}}' | {{.Vars}} sudo -E -S sh '{{.Path}}'",
+      "execute_command": "{{.Vars}} sh '{{.Path}}'",
       "scripts": [
         "scripts/cleanup.sh",
         "scripts/zero.sh"

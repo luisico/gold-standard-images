@@ -7,10 +7,7 @@
     "vm_name": null,
     "version": "0.0.0",
 
-    "headless": "true",
-
-    "username": "vagrant",
-    "password": "vagrant"
+    "headless": "true"
   },
 
   "builders": [
@@ -25,11 +22,11 @@
 
       "guest_additions_path": "/tmp/VBoxGuestAdditions.iso",
 
-      "ssh_username": "{{user `username`}}",
-      "ssh_password": "{{user `password`}}",
+      "ssh_username": "root",
+      "ssh_private_key_file": "keys/packer",
       "ssh_timeout": "10m",
 
-      "shutdown_command": "echo '{{user `username`}}' | sudo -S shutdown -P now"
+      "shutdown_command": "shutdown -P now"
     }
   ],
 
@@ -38,12 +35,12 @@
       "type": "ansible",
       "playbook_file": "ansible/virtualbox.yml",
       "sftp_command": "/usr/libexec/openssh/sftp-server -e",
-      "user": "{{user `username`}}",
-      "extra_arguments": [ "-v", "--sudo" ]
+      "user": "root",
+      "extra_arguments": [ "-v" ]
     },
     {
       "type": "shell",
-      "execute_command": "echo '{{user `username`}}' | {{.Vars}} sudo -E -S sh '{{.Path}}'",
+      "execute_command": "{{.Vars}} sh '{{.Path}}'",
       "scripts": [
         "scripts/cleanup.sh",
         "scripts/zero.sh"
