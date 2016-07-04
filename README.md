@@ -1,6 +1,7 @@
 # TODO
 - User vagrant? Different users might be needed for each artifact
 - Use EPM for repositories
+- Document generation of vagrant and packer keys
 
 # Build images
 ls templates/*.yml | grep -v include.yml | while read template; do

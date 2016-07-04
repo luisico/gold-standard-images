@@ -7,3 +7,4 @@ TAGS
 /artifacts/**/*.box
 /artifacts/**/*.ova
 /artifacts/**/*.ovf
+/keys/*
