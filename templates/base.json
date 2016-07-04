@@ -43,7 +43,7 @@
 
       "http_directory": "",
       "boot_command": [
-        "<tab> ks=http://{{user `ks_server`}}/ks.php?machine=vagrant selinux=0<enter><wait>"
+        "<tab> ks=http://{{user `ks_server`}}/ks.php?machine=packer selinux=0<enter><wait>"
       ],
 
       "vboxmanage": [

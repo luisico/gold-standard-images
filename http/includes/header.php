@@ -22,8 +22,8 @@ include $machinefile;
 list($hostname, $foo) = explode('.', $fqdn);
 $networkip = substr($ipaddr, 0, strrpos($ipaddr, '.'));
 
-if ($hostname == 'vagrant') {
-  $hardware = 'vagrant';
+if ($hostname == 'packer') {
+  $hardware = 'packer';
   $build_server = 'mirror.ox.ac.uk/sites/mirror.centos.org';
 } else {
   $hardware = 'metal';
