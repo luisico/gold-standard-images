@@ -5,6 +5,11 @@ TAGS
 
 /packer_cache
 /artifacts/**/*.box
+/artifacts/**/*.nvram
 /artifacts/**/*.ova
 /artifacts/**/*.ovf
+/artifacts/**/*.vmdk
+/artifacts/**/*.vmsd
+/artifacts/**/*.vmx
+/artifacts/**/*.vmxf
 /keys/*

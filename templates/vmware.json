@@ -1,0 +1,82 @@
+{
+  "min_packer_version": "0.10.0",
+  "description": "Base virtualbox image in ova format. This image is feeded into other templates to create multiple artifacts",
+
+  "variables": {
+    "namespace": "ebi",
+    "vm_name": null,
+    "version": "0.0.0",
+
+    "headless": "true",
+
+    "iso": null,
+    "os_name": null,
+    "os_version": null,
+    "iso_checksum": null,
+
+    "server": "mirror.ox.ac.uk/sites/mirror.centos.org",
+    "ks_server": "172.22.10.249/~luisg/ks"
+  },
+
+  "builders": [
+    {
+      "type": "vmware-iso",
+      "headless": "{{user `headless`}}",
+      "output_directory": "artifacts/{{user `version`}}/vmware",
+      "vm_name": "{{user `vm_name`}}",
+      "format": "ova",
+
+      "disk_size": "5000",
+
+      "iso_url": "http://{{user `server`}}/{{user `os_version`}}/isos/x86_64/{{user `iso`}}.iso",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "{{user `iso_checksum`}}",
+
+      "guest_os_type": "rhel7-64",
+      "tools_upload_flavor": "",
+
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "ssh_timeout": "10m",
+
+      "shutdown_command": "shutdown -P now",
+
+      "http_directory": "",
+      "boot_command": [
+        "<tab> ks=http://{{user `ks_server`}}/ks.php?machine=packer selinux=0<enter><wait>"
+      ],
+
+      "vmx_data": {
+        "memsize": "512",
+        "numvcpus": "1",
+        "cpuid.coresPerSocket": "1"
+      }
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "ansible/vmware.yml",
+      "sftp_command": "/usr/libexec/openssh/sftp-server -e",
+      "user": "root",
+      "extra_arguments": [ "-v" ]
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sh '{{.Path}}'",
+      "scripts": [
+        "scripts/cleanup.sh",
+        "scripts/zero.sh"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": true,
+      "output": "artifacts/{{user `version`}}/vmware/{{user `vm_name`}}.box"
+    }
+  ]
+}

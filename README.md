@@ -2,6 +2,8 @@
 - User vagrant? Different users might be needed for each artifact
 - Use EPM for repositories
 - Document generation of vagrant and packer keys
+- guest_os_type variables for vbox and vmware should go in OS template
+- Bigger disk size and allow to grow?
 
 # Build images
 
@@ -21,6 +23,8 @@ vars="-var-file=templates/CentOS-7-x86_64-Minimal-1511.json -var version=$versio
 packer build $opts $vars templates/base.json
 packer build $opts $vars templates/aws.json
 packer build $opts $vars templates/virtualbox.json
+packer build $opts $vars templates/vmware.json
+ovftool -dm=thin --compress=1 artifacts/$version/vmware/${vm_name}.vmx artifacts/$version/vmware/${vm_name}.ova
 
 #cp artifacts/$version/aws/$vm_name.ova s3://$s3bucket/
 #aws ec2 import-image --disk-container "Format=ova,UserBucket={S3Bucket=$s3bucket,S3Key=$vm_name.ova}"
