@@ -13,3 +13,4 @@ TAGS
 /artifacts/**/*.vmx
 /artifacts/**/*.vmxf
 /keys/*
+/README.html
