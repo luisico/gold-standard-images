@@ -7,13 +7,12 @@
     "vm_name": null,
     "version": "0.0.0",
 
-    "headless": "true",
-
-    "iso": null,
     "os_name": null,
     "os_version": null,
+    "iso": null,
     "iso_checksum": null,
 
+    "headless": "true",
     "server": "mirror.ox.ac.uk/sites/mirror.centos.org",
     "ks_server": "172.22.10.249/~luisg/ks"
   },
