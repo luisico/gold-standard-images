@@ -18,7 +18,7 @@
       "vm_name": "{{user `vm_name`}}",
       "format": "ova",
 
-      "source_path": "artifacts/{{user `version`}}/base/{{user `vm_name`}}.ova",
+      "source_path": "artifacts/{{user `version`}}/{{user `vm_name`}}/base/{{user `vm_name`}}.ova",
 
       "guest_additions_path": "/tmp/VBoxGuestAdditions.iso",
 
@@ -52,7 +52,7 @@
     {
       "type": "vagrant",
       "keep_input_artifact": true,
-      "output": "artifacts/{{user `version`}}/virtualbox/{{user `vm_name`}}.box"
+      "output": "artifacts/{{user `version`}}/{{user `vm_name`}}/virtualbox/{{user `vm_name`}}.box"
     }
   ]
 }

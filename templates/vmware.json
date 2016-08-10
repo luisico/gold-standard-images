@@ -21,7 +21,7 @@
     {
       "type": "vmware-iso",
       "headless": "{{user `headless`}}",
-      "output_directory": "artifacts/{{user `version`}}/vmware",
+      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/vmware",
       "vm_name": "{{user `vm_name`}}",
       "format": "ova",
 
@@ -75,7 +75,7 @@
     {
       "type": "vagrant",
       "keep_input_artifact": true,
-      "output": "artifacts/{{user `version`}}/vmware/{{user `vm_name`}}.box"
+      "output": "artifacts/{{user `version`}}/{{user `vm_name`}}/vmware/{{user `vm_name`}}.box"
     }
   ]
 }

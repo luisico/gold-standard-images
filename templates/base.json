@@ -21,7 +21,7 @@
     {
       "type": "virtualbox-iso",
       "headless": "{{user `headless`}}",
-      "output_directory": "artifacts/{{user `version`}}/base",
+      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/base",
       "vm_name": "{{user `vm_name`}}",
       "format": "ova",
 
@@ -77,7 +77,7 @@
     {
       "type": "vagrant",
       "keep_input_artifact": true,
-      "output": "artifacts/{{user `version`}}/base/{{user `vm_name`}}.box"
+      "output": "artifacts/{{user `version`}}/{{user `vm_name`}}/base/{{user `vm_name`}}.box"
     }
   ]
 }

@@ -17,11 +17,11 @@
     {
       "type": "virtualbox-ovf",
       "headless": "{{user `headless`}}",
-      "output_directory": "artifacts/{{user `version`}}/aws",
+      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/aws",
       "vm_name": "{{user `vm_name`}}",
       "format": "ova",
 
-      "source_path": "artifacts/{{user `version`}}/base/{{user `vm_name`}}.ova",
+      "source_path": "artifacts/{{user `version`}}/{{user `vm_name`}}/base/{{user `vm_name`}}.ova",
 
       "guest_additions_mode": "disable",
 
