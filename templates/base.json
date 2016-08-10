@@ -13,8 +13,8 @@
     "iso_checksum": null,
 
     "headless": "true",
-    "server": "mirror.ox.ac.uk/sites/mirror.centos.org",
-    "ks_server": "172.22.10.249/~luisg/ks"
+    "iso_server": "http://jaca.ebi.ac.uk/~luisg/gsi",
+    "ks_server": "http://jaca.ebi.ac.uk/~luisg/gsi"
   },
 
   "builders": [
@@ -27,7 +27,7 @@
 
       "disk_size": "5000",
 
-      "iso_url": "http://{{user `server`}}/{{user `os_version`}}/isos/x86_64/{{user `iso`}}.iso",
+      "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
       "iso_checksum_type": "sha256",
       "iso_checksum": "{{user `iso_checksum`}}",
 
@@ -42,7 +42,7 @@
 
       "http_directory": "",
       "boot_command": [
-        "<tab> ks=http://{{user `ks_server`}}/ks.php?machine=packer selinux=0<enter><wait>"
+        "<tab> ks={{user `ks_server`}}/ks.php?machine=packer selinux=0<enter><wait>"
       ],
 
       "vboxmanage": [

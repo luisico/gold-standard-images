@@ -13,4 +13,5 @@ TAGS
 /artifacts/**/*.vmx
 /artifacts/**/*.vmxf
 /keys/*
+/http/isos/**/*.iso
 /README.html
