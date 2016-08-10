@@ -21,6 +21,7 @@ The system depends on 4 inputs:
 
 ### OS
 - Centos 7.2.1511
+- RedHat 7.2
 
 ### Providers
 - Virtualbox
