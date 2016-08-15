@@ -1,6 +1,7 @@
 ---
 - hosts: all
   tasks:
+    - include: tasks/repos.yml
     - include: tasks/config_sshd.yml
     - include: tasks/ssh_keys.yml user=root key=packer
     - include: tasks/vmware_tools.yml
