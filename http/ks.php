@@ -2,7 +2,7 @@
 install
 cmdline
 
-<?php echo "url --url http://${build_server}/${os_version}/os/x86_64\n"; ?>
+<?php include "includes/repos/${os_name}.php"; ?>
 
 lang en_GB.UTF-8
 keyboard uk

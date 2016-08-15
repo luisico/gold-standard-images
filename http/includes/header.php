@@ -1,7 +1,12 @@
 <?php
 header('Content-type: text/plain');
 
+// Defaults hardware
+$hardware = 'metal';
+
+// Parse machine
 $machine = $_GET['machine'];
+
 if (!$machine) {
   header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request', true, 400);
   echo '400 Bad Request';
@@ -19,14 +24,11 @@ if (!file_exists($machinefile)) {
 
 include $machinefile;
 
-list($hostname, $foo) = explode('.', $fqdn);
-$networkip = substr($ipaddr, 0, strrpos($ipaddr, '.'));
-
-if ($hostname == 'packer') {
-  $hardware = 'packer';
-  $build_server = 'mirror.ox.ac.uk/sites/mirror.centos.org';
-} else {
-  $hardware = 'metal';
-  // $build_server = ''; // TODO
+// Parse OS (takes precedence over definitions in machinefile)
+if ($_GET['os']) {
+  list($os_name, $os_version) = explode('-', $_GET['os'], 2);
 }
+
+// Set hostname and domain
+list($hostname, $domain) = explode('.', $fqdn, 2);
 ?>
