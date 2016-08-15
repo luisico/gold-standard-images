@@ -33,7 +33,7 @@ The system depends on 4 inputs:
 First select the OS, artifact name and version and a few other variables:
 ```
 vm_name=centos72
-version=0.2.0
+version=0.1.0
 s3_bucket=mys3bucket
 
 vars="-var-file=templates/CentOS-7-x86_64-Minimal-1511.json -var version=$version -var s3_bucket=$s3_bucket"
@@ -52,7 +52,7 @@ packer build $opts $vars templates/base.json
 packer build $opts $vars templates/aws.json
 packer build $opts $vars templates/virtualbox.json
 packer build $opts $vars templates/vmware.json
-ovftool -dm=thin --compress=1 artifacts/$version/vmware/${vm_name}.vmx artifacts/$version/vmware/${vm_name}.ova
+ovftool --name=${vm_name}-${version}-packer -dm=thin --vCloudTemplate --compress=1 artifacts/$version/${vm_name}/vmware/${vm_name}.vmx artifacts/$version/${vm_name}/vmware/${vm_name}.ova
 ```
 
 # Components
@@ -113,33 +113,41 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 |   |-- files/                                    Files used by Ansible tasks
 |   `-- templates/                                Templates used by Ansible tasks
 |-- artifacts/                                    Artifacts (intermediate/end images)
-|   |-- 0.1.0/                                    Ordered by version and template
-|   |   |-- aws/                                  Each template might contain multiple artifacts
-|   |   |   `-- centos72.ova                      in different formats
-|   |   .                                         Directory structure is in VC, but not the artifacts [!VC]
-|   |   `-- vmware/
-|   |       |-- centos72.box
-|   |       |-- centos72.ova
-|   |       |-- ...
-|   |       `-- disk.vmdk
-|   `-- CentOS-7.2.1511.json                      Vagrant boxes catalog metadata
+|   |-- 0.1.0/                                    Ordered by version
+|       |-- centos72/                               and OS
+|       |   |-- aws/                              Each template might contain multiple artifacts
+|       |   |   `-- centos72.ova                    in different formats. Directory structure is
+|       |   .                                       in VC, but not the artifacts [!VC]
+|       |   `-- vmware/
+|       |       |-- centos72.box
+|       |       |-- centos72.ova
+|       |       |-- ...
+|       |       `-- disk.vmdk
+|       `-- CentOS-7.2.1511.json                  Vagrant boxes catalog metadata
 |-- http/                                         HTTP server directory for Packer.io and metal PXE
-|   |-- includes/
+|   |-- ks.php                                    Kickstart entry point
+|   |-- includes/                                 Kickstart include files
 |   |   |-- header.php
-|   |   |-- metal/
+|   |   |-- metal/                                Metal specific Kickstart settings
 |   |   |   |-- disk.php
 |   |   |   |-- network.php
 |   |   |   |-- post.php
 |   |   |   `-- rootpw.php
-|   |   `-- packer/
-|   |       |-- disk.php
-|   |       |-- network.php
-|   |       |-- post.php
-|   |       `-- rootpw.php
-|   |-- ks.php                                    Kickstart entry point
-|   `-- machines/                                 Per machine definition (used mostly for bare metal)
-|       `-- packer.php                            Definitions for machines bootstrap by Packer.io
-|-- isos/                                         Locally downloaded isos
+|   |   |-- packer/                               Packer specific Kickstart settings
+|   |   |   |-- disk.php
+|   |   |   |-- network.php
+|   |   |   |-- post.php
+|   |   |   `-- rootpw.php
+|   |   `-- repos/                                Repositoy URLs for OSs
+|   |       |-- CentOS.php
+|   |       `-- RedHat.php
+|   |-- machines/                                 Per machine definition (used mostly for bare metal)
+|   |   `-- packer.php                            Definitions for machines bootstrap by Packer.io
+|   ` -- isos/                                    Locally downloaded isos
+|       |-- CentOS/                               Ordered by OS
+|       |   `-- 7.2.1511/                           and version
+|       |     `-- CentOS-7-x86_64-Minimal-1511.iso
+|       `-- RedHat/
 |-- keys/                                         SSH keys [!VC]
 |   |-- packer
 |   |-- packer.pub
@@ -155,7 +163,7 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 |   |-- virtualbox.json                           VirtualBox
 |   |-- vmware.json                               VMware
 |   |-- ...
-|   `-- CentOS-7-x86_64-Minimal-1511.json         CentOS 7 variables
+|   `-- CentOS-7-x86_64-Minimal-1511.json         OS specific variables (ie CentOS)
 |-- test/                                         Vagrant tests
 |   `-- Vagrantfile
 `-- .gitignore                                    Files to ignore in VC
@@ -167,5 +175,6 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 - Use EPM for all repositories
 - Document generation of vagrant and packer keys
 - Bigger disk size and allow to grow?
-- Move vm_name out of OS templates?
 - guest_os_type variables for vbox and VMware should go in OS template
+- Move vm_name out of OS templates?
+- Change vm_name to be similar to OS (ie CentOS-7.2.1511)
