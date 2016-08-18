@@ -33,10 +33,15 @@ The system depends on 4 inputs:
 First select the OS, artifact name and version and a few other variables:
 ```
 vm_name=centos72
+template=CentOS-7-x86_64-Minimal-1511
+
+vm_name=rhel72
+template=rhel-server-7.2-x86_64
+
 version=0.1.0
 s3_bucket=mys3bucket
 
-vars="-var-file=templates/CentOS-7-x86_64-Minimal-1511.json -var version=$version -var s3_bucket=$s3_bucket"
+vars="-var-file=templates/$template.json -var version=$version -var s3_bucket=$s3_bucket"
 opts=""
 ```
 
