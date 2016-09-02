@@ -1,5 +1,5 @@
 ---
-- name: EPM repos
+- name: Base EPM repos for rhel 7
   yum_repository: name={{item.name}} description='{{item.desc}}' baseurl=http://epm.ebi.ac.uk/epm/baselines/{{item.epm}} gpgcheck=no state=present owner=root group=root mode=0644
   with_items:
     - {name: rhel-7-server-rpms, desc: 'RHEL Server 7 x86_64', epm: rh7-network/rhel-7-server-rpms}
