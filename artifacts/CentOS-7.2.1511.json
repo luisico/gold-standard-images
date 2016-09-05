@@ -12,8 +12,15 @@
         "checksum_type": "sha256",
         "checksum": "e2d89b3781870466dceff4ef97af01434e80149aef53aaf44910367bd3c9d516"
       }]
+    }, {
+      "version": "0.3.0",
+      "status": "active",
+      "providers": [{
+        "name": "virtualbox",
+        "url": "~/provision/boxes/artifacts/0.3.0/centos72/virtualbox/centos72.box",
+        "checksum_type": "sha256",
+        "checksum": "7681e0a2d3f544fc82089bff5c536bcfbb77f2e44f82b6d115bf61d03a5b4e35"
+      }]
     }
   ]
 }
-
-
