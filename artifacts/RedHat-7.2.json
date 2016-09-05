@@ -1,0 +1,17 @@
+{
+  "name": "ebi/RedHat-7.2",
+  "description": "Minimal Vagrant box for RedHat 7.2 (64bits)",
+  "short_description": "RedHat-7.2",
+  "versions": [
+    {
+      "version": "0.3.0",
+      "status": "active",
+      "providers": [{
+        "name": "virtualbox",
+        "url": "~/provision/boxes/artifacts/0.3.0/rhel72/virtualbox/rhel72.box",
+        "checksum_type": "sha256",
+        "checksum": "20e4f91a98d3001dfe8ac2d528516ba00169a001fe0533c069106d9dc8b1d28d"
+      }]
+    }
+  ]
+}
