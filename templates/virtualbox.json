@@ -14,7 +14,7 @@
     {
       "type": "virtualbox-ovf",
       "headless": "{{user `headless`}}",
-      "output_directory": "artifacts/{{user `version`}}/virtualbox",
+      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/virtualbox",
       "vm_name": "{{user `vm_name`}}",
       "format": "ova",
 
