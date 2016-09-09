@@ -1,11 +1,41 @@
-# ENV['VAGRANT_SERVER_URL'] = "file://~/provision/boxes/artifacts"
+# Define directories
+MAINDIR = Pathname.new("#{ENV['HOME']}/provision/boxes")
+ARTIFACTSDIR = MAINDIR + 'artifacts'
+KEYSDIR = MAINDIR + 'keys'
 
-box = "CentOS-7.2.1511"
+# For vagrant servers (currently not working with local paths)
+# ENV['VAGRANT_SERVER_URL'] = 'file://~/provision/boxes/artifacts'
+
+# Default is latest rhel 7.2 for virtualbox
+default = {
+  version: ARTIFACTSDIR.children.select{|p| p.directory? and p.basename.to_s.match(/^\d+\.\d+\.\d+$/)}.sort.last.basename.to_s,
+  name: 'rhel72',
+  template: 'virtualbox'
+}
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "ebi/#{box}"
-  config.vm.box_url = "file://../artifacts/#{box}.json"
+  # Default ssh config
+  config.ssh.username = 'vagrant'
+  config.ssh.private_key_path = KEYSDIR + 'vagrant'
 
-  # SSH config
-  config.ssh.private_key_path = "../keys/vagrant"
+  # Configure all available machines
+  Dir.glob(ARTIFACTSDIR + '**' + '*.box').each do |artifact|
+    version, name, template, file = Pathname.new(artifact).relative_path_from(ARTIFACTSDIR).to_s.split(File::SEPARATOR)
+
+    # Skip boxes that don't follow directory structure convention
+    next if file.nil?
+
+    # Only startup the default box if none is specified in commandline
+    box_name = "#{name}-#{version}_#{template}"
+    is_default = (box_name == "#{default[:name]}-#{default[:version]}_#{default[:template]}")
+    config.vm.define box_name, primary: is_default, autostart: is_default do |box|
+      box.vm.box = 'file://' + (ARTIFACTSDIR + version + name + template + file).to_s
+
+      # These artifacts don't have a vagrant key
+      if template == 'base'
+        box.ssh.username = 'root'
+        box.ssh.private_key_path = KEYSDIR + 'packer'
+      end
+    end
+  end
 end
