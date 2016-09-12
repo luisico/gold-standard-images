@@ -1,6 +1,6 @@
 {
   "min_packer_version": "0.10.0",
-  "description": "Import a Virtualbox OVA into AWS AMI",
+  "description": "Import a Virtualbox OVA based on the base image into AWS AMI",
 
   "variables": {
     "namespace": "ebi",

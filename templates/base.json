@@ -1,6 +1,6 @@
 {
   "min_packer_version": "0.10.0",
-  "description": "Base virtualbox image in ova format. This image is feeded into other templates to create multiple artifacts",
+  "description": "Base image feeded into other templates to create multiple artifacts",
 
   "variables": {
     "namespace": "ebi",

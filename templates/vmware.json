@@ -1,6 +1,6 @@
 {
   "min_packer_version": "0.10.0",
-  "description": "",
+  "description": "VMWare box (replicates options in base template)",
 
   "variables": {
     "namespace": "ebi",
@@ -77,6 +77,21 @@
       "type": "vagrant",
       "keep_input_artifact": true,
       "output": "artifacts/{{user `version`}}/{{user `vm_name`}}/vmware/{{user `vm_name`}}.box"
+    },
+    {
+      "type": "vsphere",
+
+      "cluster": "mycluster",
+      "datacenter": "mydatacenter",
+      "datastore": "mydatastore",
+      "host": "myhost",
+      "password": "password",
+      "username": "myusername",
+      "vm_name": "packertest",
+
+      "disk_mode": "thin",
+      "vm_folder": "myfolder",
+      "vm_network": "mynetwork"
     }
   ]
 }

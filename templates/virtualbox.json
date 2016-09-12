@@ -1,6 +1,6 @@
 {
   "min_packer_version": "0.10.0",
-  "description": "Create a vagrant box from a Virtualbox OVA",
+  "description": "Vagrant box for Virtualbox based on base image",
 
   "variables": {
     "namespace": "ebi",
