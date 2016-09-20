@@ -1,6 +1,0 @@
----
-- name: Set random password for root
-  user: user=root password="{{ansible_machine_id | shuffle | string | password_hash('sha512')}}"
-
-- name: Remove packer ssh key
-  authorized_key: user=root key="{{lookup('file', '../keys/packer.pub')}}" state=absent

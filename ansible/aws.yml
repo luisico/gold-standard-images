@@ -1,6 +1,7 @@
 ---
-- hosts: all
+- name: aws
+  hosts: all
   tasks:
+    - include: base.yml
     - include: tasks/shared_ami.yml
     - include: tasks/cloud_init.yml
-    - include: tasks/reset_root.yml

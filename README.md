@@ -11,8 +11,7 @@ The system proposed here relies on [Packer.io](https://www.packer.io), [Vagrant]
 
 The images produced are minimal by design, containing only the minimum number of packages and configuration to make them workable, secure and general enough to be reused in multiple projects.
 
-The system depends on 4 inputs:
-- Packer.io template.
+The system depends on three inputs:
 - OS ISO image.
 - Kickstart.
 - Ansible playbooks.
@@ -30,33 +29,32 @@ The system depends on 4 inputs:
 
 # Building artifacts
 
-First select the OS, artifact name and version and a few other variables:
+First select the artifact name and OS template. Supported operating system are:
 ```
-vm_name=centos72
-template=CentOS-7-x86_64-Minimal-1511
+vm_name=centos72 ; template=CentOS-7-x86_64-Minimal-1511
+vm_name=rhel72   ; template=rhel-server-7.2-x86_64
+```
 
-vm_name=rhel72
-template=rhel-server-7.2-x86_64
-
+Then select the version to generate and other variables used by packer (a complete list can be found at the top of `template/main.json`), ie:
+```
 version=0.0.0
-s3_bucket=mys3bucket
-
-vars="-var-file=templates/$template.json -var version=$version -var s3_bucket=$s3_bucket"
-opts=""
+aws_s3_bucket=mys3bucket
+vmware_host=myhost
 ```
 
-Other optional variables and options of interest are:
+Other options of interest are:
 ```
-vars="$vars -var headless=false"        # helps debugging
-opts="$opts -force"                     # forces overwriting of artifacts
+opts="-var headless=false"        # helps debugging kickstarts
+opts="-force"                     # forces overwriting of artifacts
 ```
 
-Run packer (and ovftool helper for VMware) in turn to generate the different artifacts as needed:
+Run packer in parallel to generate the all artifacts and automatically upload them to their cloud providers (when available):
 ```
-packer build $opts $vars templates/base.json
-packer build $opts $vars templates/aws.json
-packer build $opts $vars templates/virtualbox.json
-packer build $opts $vars templates/vmware.json
+packer build $opts -var-file=templates/$template.json -var version=$version -var s3_bucket=$s3_bucket templates/main.json
+```
+
+For vmware manual upload is needed at the moment from a converte OVA artifact:
+```
 ovftool --name=${vm_name}-${version}-packer -dm=thin --vCloudTemplate --compress=1 artifacts/$version/${vm_name}/vmware/${vm_name}.vmx artifacts/$version/${vm_name}/vmware/${vm_name}.ova
 ```
 
@@ -66,38 +64,38 @@ The build of an artifact for use in a cloud environment start with a Packer.io t
 
 ## Packer.io templates
 
-Standard Packer.io JSON templates for different cloud providers are located in the `templates/` directory alongside with OS specific templates (ie `CentOS-7-x86_64-Minimal-1511.json`).
+A standard Packer.io JSON template for parallel generation of artifacts for different cloud providers is located in the `templates/main.json` alongside with OS specific templates (ie `CentOS-7-x86_64-Minimal-1511.json`).
 
-Each template declares a set of variables (`user variables` as per Packer.io), which can generally be divided in three types:
+This standard template declares a set of variables (`user variables` as per Packer.io), which can generally be divided in three types:
 - Artifact specific variables (ie `namespace`, `vm_name` and `version`).
 - OS specific variables (ie `os_name`, `os_version`, `iso` and `iso_checksum`). These are unset in the templates and instead should be defined for each supported OS in a OS specific template (ie `CentOS-7-x86_64-Minimal-1511.json`). These might not be declared if the template depends on another template's artifacts.
-- General template variables needed by the builder/provisioners used within the template.
+- Specific template variables needed by the builders and post-processors (these have a prefix corresponding to the builder name).
 
 Default values are provider either on the template itself or on the OS specific template. Those variables with a default value of `null` will need to get their value from the OS specific template or the command line. Variables defined in the OS specific template will always override values from the template, and variables defined in the command line will override any other value.
 
 This setup provides flexibility in image building process, like separating building process from OS, and allowing for versioning of artifacts.
 
-Templates will bootstrap artifacts for one or more cloud providers, usually providing an additional VirtualBox artifact for development/testing purposes.
-
-Note that some of the templates depend on the output produced by the `base` template. `vmware` template is an exception and replicated most of the options from `base`. Care should be taken to keep them in sync.
+The main templates will bootstrap artifacts for multiple providers, usually providing an additional VirtualBox artifact for development/testing purposes.
 
 ## Kickstarts
 
 Kickstart files are located in the `http/` directory. The main kickstart file is `ks.php`, and requires a server running php. On a local computer the easiest is to install apache and symlink this directory to `~/public_html`. The kickstart system is divided in multiple files that get included depending on the variables defined the machine file for the specified server (found in `machines/`). All Packer.io templates will use definitions found `packer.php` while bare metal servers will look for definition files with their hostname. Different kickstart sections get included for metal or packer appropriately. URLs to target different servers are in the form of `http://server.domain:port/ks.php?machine=packer` (substitute `packer` with any machine defined under `machines/`).
 
-Note that some Packer.io templates depend on previously generated artifacts and therefore will not use a kickstart.
-
 ### First boot options
 
-Templates using a kickstart pass the following boot options:
+Builders using a kickstart pass the following boot options:
 - `selinux=0` will disable selinux.
 
-The customized kickstart also understand the following options:
-- `EJECT` will eject the first cd/dvd drive. This is mainly use in bare metal.
+The customized kickstart also understands the following options:
+- `EJECT` will eject the first cd/dvd drive. This is mainly use in bare metal outside of packer.
 
 ## Ansible playbooks
 
-Each template will provision the image by calling an Ansible playbook by the same name as the template. The structure of these playbooks does not conform to best practices due to the specificity of this projects. In particular, tasks are used directly instead of roles. Tasks (as well as templates and files) are shared among all playbooks to better maintain consistency among generated artifacts. Note that idempotency is not key when running Ansible in this project because a playbook is only run once.
+Each builder will provision the image by calling an Ansbile playbook of the same name, ie `virtualbox.yml`. These playbooks start by running base tasks from `base.yml` common to all builders, and then running the builder specific tasks.
+
+The structure of these playbooks does not conform to best practices due to the specificity of this projects. In particular, tasks are used directly instead of roles. Tasks (as well as templates and files) are shared among all playbooks to better maintain consistency among generated artifacts.
+
+Note that idempotency is not key when running Ansible in this project because a playbook is only run once.
 
 ## Finishing shell scripts
 
@@ -108,27 +106,27 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 ## Directory Structure
 
 ```
-|-- ansible/                                      Ansible playbooks (one per Packer.io template)
-|   |-- base.yml                                  Base
-|   |-- aws.yml                                   AWS
-|   |-- virtualbox.yml                            VirtualBox
-|   |-- vmware.yml                                VMware
+|-- ansible/                                      Ansible playbooks
+|   |-- base.yml                                  Base tasks included in all playbooks
+|   |-- virtualbox.yml                            One playbook per builder
+|   |-- vmware.yml
 |   |-- ...
 |   |-- tasks/                                    Tasks used in playbooks
 |   |-- files/                                    Files used by Ansible tasks
 |   `-- templates/                                Templates used by Ansible tasks
 |-- artifacts/                                    Artifacts (intermediate/end images)
-|   |-- 0.1.0/                                    Ordered by version
-|       |-- centos72/                               and OS
-|       |   |-- aws/                              Each template might contain multiple artifacts
-|       |   |   `-- centos72.ova                    in different formats. Directory structure is
-|       |   .                                       in VC, but not the artifacts [!VC]
-|       |   `-- vmware/
-|       |       |-- centos72.box
-|       |       |-- centos72.ova
-|       |       |-- ...
-|       |       `-- disk.vmdk
-|       `-- CentOS-7.2.1511.json                  Vagrant boxes catalog metadata
+|   |-- 0.0.0/                                    Ordered by version
+|   |   `-- rhel72/                               and OS
+|   |       |-- aws/                              Each template generates at least 2 artifacts
+|   |       |   `-- rhel72-aws-0.0.0.ova            A template specific artifact
+|   |       |   `-- rhel72-aws-0.0.0.box            A vagrant box for debugging purposes
+|   |       .                                       Other files might be generated by packer
+|   |       `-- vmware/                             Directory structure is in VC, but
+|   |           |-- rhel72-aws-0.0.0.box            not the artifacts [!VC]
+|   |           |-- rhel72-aws-0.0.0.ova
+|   |           |-- ...
+|   |           `-- rhel72-aws-0.0.0.vmdk
+|   `-- RedHat-7.2.json                           Vagrant boxes catalog metadata (one per OS)
 |-- http/                                         HTTP server directory for Packer.io and metal PXE
 |   |-- ks.php                                    Kickstart entry point
 |   |-- includes/                                 Kickstart include files
@@ -149,10 +147,10 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 |   |-- machines/                                 Per machine definition (used mostly for bare metal)
 |   |   `-- packer.php                            Definitions for machines bootstrap by Packer.io
 |   ` -- isos/                                    Locally downloaded isos
-|       |-- CentOS/                               Ordered by OS
-|       |   `-- 7.2.1511/                           and version
-|       |     `-- CentOS-7-x86_64-Minimal-1511.iso
-|       `-- RedHat/
+|       |-- RedHat/                               Ordered by OS
+|       |   `-- 7.2/                                and version
+|       |     `-- rhel-server-7.2-x86_64-boot.iso
+|       `-- CentOS/
 |-- keys/                                         SSH keys [!VC]
 |   |-- packer
 |   |-- packer.pub
@@ -163,12 +161,9 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 |   |-- cleanup.sh                                Cleanup boxes
 |   `-- zero.sh                                   Compress boxes
 |-- templates/                                    Packer.io templates
-|   |-- base.json                                 Base (used by other templates)
-|   |-- aws.json                                  AWS
-|   |-- virtualbox.json                           VirtualBox
-|   |-- vmware.json                               VMware
-|   |-- ...
-|   `-- CentOS-7-x86_64-Minimal-1511.json         OS specific variables (ie CentOS)
+|   |-- main.json                                 Parallel template
+|   |-- rhel-server-7.2-x86_64.json               OS specific variables
+|   `-- CentOS-7-x86_64-Minimal-1511.json
 |-- test/                                         Vagrant tests
 |   `-- Vagrantfile
 `-- .gitignore                                    Files to ignore in VC

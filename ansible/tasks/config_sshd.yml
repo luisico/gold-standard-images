@@ -1,6 +1,3 @@
 ---
 - name: Do not use DNS in sshd
   lineinfile: dest=/etc/ssh/sshd_config regexp='^#?UseDNS' line='UseDNS no' state=present
-
-- name: Disable root logins with password
-  lineinfile: dest=/etc/ssh/sshd_config regexp='^#?PermitRootLogin' line='PermitRootLogin without-password' state=present
