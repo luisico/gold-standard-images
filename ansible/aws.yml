@@ -3,5 +3,5 @@
   hosts: all
   tasks:
     - include: base.yml
-    - include: tasks/shared_ami.yml
+    - include: tasks/aws.yml
     - include: tasks/cloud_init.yml

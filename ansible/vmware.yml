@@ -3,4 +3,4 @@
   hosts: all
   tasks:
     - include: base.yml
-    - include: tasks/vmware_tools.yml
+    - include: tasks/vmware.yml

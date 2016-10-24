@@ -3,5 +3,5 @@
   hosts: all
   tasks:
     - include: base.yml
-    - include: tasks/virtualbox_guest_additions.yml
+    - include: tasks/virtualbox.yml
     - include: tasks/vagrant_user.yml
