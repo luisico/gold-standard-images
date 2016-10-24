@@ -1,4 +1,10 @@
 ---
+- name: Add repo rhel-7-server-rh-common-rpms
+  yum_repository: name={{item.name}} description='{{item.desc}}' baseurl=http://epm.ebi.ac.uk/epm/baselines/{{item.epm}} gpgcheck=no state=present owner=root group=root mode=0644
+  with_items:
+    - {name: rhel-7-server-rh-common-rpms, desc: 'RHEL Server 7 x86_64 Common', epm: rh7-network/rhel-7-server-rh-common-rpms}
+  when: ansible_distribution == 'RedHat' and ansible_distribution_major_version|int == 7
+
 - name: Install CloudInit
   yum: name=cloud-init state=latest
 
