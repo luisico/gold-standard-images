@@ -1,3 +1,13 @@
 # Definitions here overwrite (default) values declared at /etc/cloud/cloud.cfg
 
 disable_root: false
+
+system_info:
+  default_user:
+    name: {{ansible_distribution | lower}}
+    lock_passwd: true
+    gecos: Cloud User
+    groups: [wheel, adm, systemd-journal]
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    shell: /bin/bash
+  distro: rhel
