@@ -26,6 +26,7 @@ The system depends on three inputs:
 - Virtualbox
 - VMware
 - AWS
+- OpenStack
 
 # Building artifacts
 
@@ -53,9 +54,32 @@ Run packer in parallel to generate the all artifacts and automatically upload th
 packer build $opts -var-file=templates/$template.json -var version=$version -var s3_bucket=$s3_bucket templates/main.json
 ```
 
-For vmware manual upload is needed at the moment from a converte OVA artifact:
+## Provider specifics
+
+### VMware
+
+Manually upload from a converted OVA artifact:
+``` sh
+ovftool --name=${vm_name}-${version}-packer -dm=thin --vCloudTemplate --compress=1 artifacts/$version/${vm_name}/vmware/${vm_name}-${version}_vmware.vmx artifacts/$version/${vm_name}/vmware/${vm_name}.ova
 ```
-ovftool --name=${vm_name}-${version}-packer -dm=thin --vCloudTemplate --compress=1 artifacts/$version/${vm_name}/vmware/${vm_name}.vmx artifacts/$version/${vm_name}/vmware/${vm_name}.ova
+
+### OpenStack
+
+To manage an OpenStack cloud from command line requires the [OpenStack command-line](http://docs.openstack.org/user-guide/common/cli-install-openstack-command-line-clients.html) client. Instructions to install and use the client can be found in its webpage. Briefly, being a python tool it is best to install it in a virtualenv:
+``` sh
+virtualenv python-openstack
+. python-openstack/bin/activate
+pip install python-openstackclient
+```
+
+We also need to configure our system to access the OpenStack cloud. The easies route is to set environment variables using the OpenStack RC file. Download this file from your cloud at `Access & Security > API Access > Download OpenStack RC file` and save locally. Source it before issuing OpenStack client commands and enter your password:
+``` sh
+. openstack.rc
+```
+
+Upload:
+``` sh
+openstack image create --disk-format qcow2 --file artifacts/$version/${vm_name}/openstack/${vm_name}-${version}_openstack.qcow2 --tag packer --protected --public ${vm_name}-${version}-packer
 ```
 
 # Components

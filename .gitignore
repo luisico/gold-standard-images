@@ -12,6 +12,7 @@ TAGS
 /artifacts/**/*.vmsd
 /artifacts/**/*.vmx
 /artifacts/**/*.vmxf
+/artifacts/**/*.qcow2
 /keys/*
 /http/isos/**/*.iso
 /README.html

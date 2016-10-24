@@ -1,0 +1,7 @@
+---
+- name: openstack
+  hosts: all
+  tasks:
+    - include: base.yml
+    - include: tasks/openstack.yml
+    - include: tasks/cloud_init.yml
