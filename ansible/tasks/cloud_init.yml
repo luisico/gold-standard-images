@@ -3,7 +3,7 @@
   yum: name=cloud-init state=latest
 
 - name: Configure CloudInit
-  template: dest=/etc/cloud/cloud.cfg.d/50_local.cfg src=templates/cloud_init.cfg.j2 mode=0644 owner=root group=root
+  template: dest=/etc/cloud/cloud.cfg.d/50_local.cfg src=templates/cloud_init_local.cfg.j2 mode=0644 owner=root group=root
 
 - name: Enable CloudInit services
   service: name={{item}} enabled=yes
