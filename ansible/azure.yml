@@ -1,0 +1,6 @@
+---
+- name: azure
+  hosts: all
+  tasks:
+    - include: base.yml
+    - include: tasks/azure.yml

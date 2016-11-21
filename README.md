@@ -82,6 +82,15 @@ Upload:
 openstack image create --disk-format qcow2 --file artifacts/$version/${vm_name}/openstack/${vm_name}-${version}_openstack.qcow2 --tag packer --protected --public ${vm_name}-${version}-packer
 ```
 
+# Azure
+
+Manually upload the VHD image:
+
+``` sh
+key=$(azure storage account keys list storage_account -g resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
+azure storage blob upload -t page -a storage_account -k $key --container images_container -f artifacts/$version/${vm_name}/azure/${vm_name}-${version}_azure.vhd
+```
+
 # Components
 
 The build of an artifact for use in a cloud environment start with a Packer.io template, which in turn will first use a kickstart to bootstrap the machine and then provision if with Ansible playbooks and shell scripts. The end result will produce an artifact that can be deployed to the target cloud environment.
