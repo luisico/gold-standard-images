@@ -5,6 +5,6 @@ $fqdn = "packer.example.com";
 $ipaddr = "";
 $hardware = "packer";
 $swap = 0;
-$lvm = 1;
-$boot = 1;
+$lvm = 0;
+$boot = 0;
 ?>

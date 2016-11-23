@@ -1,0 +1,9 @@
+---
+- name: Find SSH host key pairs
+  find: path=/etc/ssh patterns="*_key,*_key.pub"
+  register: ssh_host_keys
+  changed_when: false
+
+- name: Remove SSH Host Key Pairs
+  file: path={{item.path}} state=absent
+  with_items: '{{ssh_host_keys.files}}'

@@ -19,10 +19,6 @@ firstboot --disabled
 
 bootloader --location mbr --driveorder sda --append "rdblacklist=nouveau nouveau.modeset=0"
 
-clearpart --drives sda --all --initlabel
-part /boot --fstype ext4 --size 150 --ondisk sda
-part pv.01 --size 1 --grow --ondisk sda
-
 <?php include "includes/$hardware/disk.php"; ?>
 
 reboot

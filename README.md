@@ -41,6 +41,7 @@ Then select the version to generate and other variables used by packer (a comple
 version=0.0.0
 aws_s3_bucket=mys3bucket
 vmware_host=myhost
+gcloud_bucket=mygcpbucket
 ```
 
 Other options of interest are:
@@ -88,7 +89,16 @@ Manually upload the VHD image:
 
 ``` sh
 key=$(azure storage account keys list storage_account -g resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
-azure storage blob upload -t page -a storage_account -k $key --container images_container -f artifacts/$version/${vm_name}/azure/${vm_name}-${version}_azure.vhd
+azure storage blob upload -t page -a storage_account -k $key --container images_container -f artifacts/$version/${vm_name}/azure/${vm_name}-${version}-packer.vhd
+```
+
+# Google Compute Cloud
+
+Manually upload the image:
+
+``` sh
+gsutil cp artifacts/$version/${vm_name}/gcloud/${vm_name}-${version}_gcloud.tar.gz gs://${gcloud_bucket}
+gcloud compute images create ${vm_name}-${version}-packer --source-uri gs://${gcloud_bucket}/${vm_name}-${version}_gcloud.tar.gz
 ```
 
 # Components
