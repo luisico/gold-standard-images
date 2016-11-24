@@ -101,6 +101,14 @@ gsutil cp artifacts/$version/${vm_name}/gcloud/${vm_name}-${version}_gcloud.tar.
 gcloud compute images create ${vm_name}-${version}-packer --source-uri gs://${gcloud_bucket}/${vm_name}-${version}_gcloud.tar.gz
 ```
 
+# Docker
+
+Manually import image:
+
+``` sh
+docker import artifacts/$version/${vm_name}/docker/{{user `version`}}_{{build_name}}.tar.gz {{user `vm_name`}}-{{user `version`}}-packer
+```
+
 # Components
 
 The build of an artifact for use in a cloud environment start with a Packer.io template, which in turn will first use a kickstart to bootstrap the machine and then provision if with Ansible playbooks and shell scripts. The end result will produce an artifact that can be deployed to the target cloud environment.

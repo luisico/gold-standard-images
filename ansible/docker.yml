@@ -1,0 +1,5 @@
+---
+- name: docker
+  hosts: all
+  tasks:
+    - include: base.yml
