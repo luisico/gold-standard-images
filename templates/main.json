@@ -71,7 +71,7 @@
       "name": "aws",
       "type": "virtualbox-iso",
       "headless": "{{user `headless`}}",
-      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{build_name}",
+      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}",
       "format": "ova",
 
