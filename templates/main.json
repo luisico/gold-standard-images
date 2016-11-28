@@ -39,7 +39,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}",
       "format": "ova",
 
-      "disk_size": "5000",
+      "disk_size": "5120",
 
       "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
       "iso_checksum_type": "sha256",
@@ -75,7 +75,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}",
       "format": "ova",
 
-      "disk_size": "5000",
+      "disk_size": "3072",
 
       "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
       "iso_checksum_type": "sha256",
@@ -111,7 +111,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}",
       "format": "ova",
 
-      "disk_size": "5000",
+      "disk_size": "3072",
 
       "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
       "iso_checksum_type": "sha256",
@@ -146,7 +146,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
       "format": "qcow2",
 
-      "disk_size": "5000",
+      "disk_size": "3072",
       "disk_interface": "ide",
       "disk_compression": true,
 
