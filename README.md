@@ -106,7 +106,7 @@ gcloud compute images create ${vm_name}-${version}-packer --source-uri gs://${gc
 Manually import image:
 
 ``` sh
-docker import artifacts/$version/${vm_name}/docker/{{user `version`}}_{{build_name}}.tar.gz {{user `vm_name`}}-{{user `version`}}-packer
+docker import artifacts/$version/${vm_name}/docker/${version}_${vm_name}.tar.gz ${vm_name}-${version}-packer
 ```
 
 # Components
