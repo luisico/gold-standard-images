@@ -1,28 +1,18 @@
 <?php
 header('Content-type: text/plain');
 
-// Defaults hardware
-$hardware = 'metal';
+// Read defaults
+include "builds/defaults.php";
 
-// Parse build type
-$build = $_GET['build'];
-
-if (!$build) {
-  header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request', true, 400);
-  echo '400 Bad Request';
-  echo 'No build type provided';
-  exit;
+// Build options (overwrite defaults)
+if ($build = $_GET['build']) {
+  $buildfile = "builds/$build.php";
+  if (!file_exists($buildfile)) {
+    echo "# Build '$build' not found... continuing with defaults\n\n";
+  }
+  include $buildfile;
 }
 
-$buildfile = "builds/$build.php";
-if (!file_exists($buildfile)) {
-  header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
-  echo '404 Not Found';
-  echo "Machine '$build' not found";
-  exit;
-}
-
-include $buildfile;
 
 // Parse OS (takes precedence over definitions in buildfile)
 if ($_GET['os']) {
