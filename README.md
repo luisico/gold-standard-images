@@ -222,3 +222,5 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 - guest_os_type variables for vbox and VMware should go in OS template
 - Move vm_name out of OS templates?
 - Change vm_name to be similar to OS (ie CentOS-7.2.1511)
+- Add other options, ie locale, root pass, ...
+- Move files with options to example files
