@@ -5,8 +5,20 @@ header('Content-type: text/plain');
 include "builds/defaults.php";
 
 // Build options (overwrite defaults)
-if ($build = $_GET['build']) {
-  $buildfile = "builds/$build.php";
+if ($_GET['build']) {
+  list($buildtype, $build) = explode('/', $_GET['build'], '2');
+
+  # Build type default options
+  $buildfile = "builds/$buildtype/defaults.php";
+  if (!file_exists($buildfile)) {
+    echo "# Build type '$buildtype' not found... using $hardware defaults\n\n";
+    $buildtype = $hardware;
+    $buildfile = "builds/$buildtype/defaults.php";
+  }
+  include $buildfile;
+
+  # Build options
+  $buildfile = "builds/$buildtype/$build.php";
   if (!file_exists($buildfile)) {
     echo "# Build '$build' not found... continuing with defaults\n\n";
   }

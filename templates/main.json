@@ -56,7 +56,7 @@
 
       "http_directory": "",
       "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build={{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
       ],
 
       "vboxmanage": [
@@ -92,7 +92,7 @@
 
       "http_directory": "",
       "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build={{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
       ],
 
       "vboxmanage": [
@@ -128,7 +128,7 @@
 
       "http_directory": "",
       "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build={{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
       ],
 
       "vmx_data": {
@@ -162,7 +162,7 @@
 
       "http_directory": "",
       "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build={{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
       ],
 
       "qemuargs": [
@@ -193,7 +193,7 @@
 
       "http_directory": "",
       "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build={{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
       ],
 
       "qemuargs": [
@@ -224,7 +224,7 @@
 
       "http_directory": "",
       "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build={{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
       ],
 
       "qemuargs": [
@@ -255,7 +255,7 @@
 
       "http_directory": "",
       "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build={{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
       ],
 
       "qemuargs": [
