@@ -4,27 +4,27 @@ header('Content-type: text/plain');
 // Defaults hardware
 $hardware = 'metal';
 
-// Parse machine
-$machine = $_GET['machine'];
+// Parse build type
+$build = $_GET['build'];
 
-if (!$machine) {
+if (!$build) {
   header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request', true, 400);
   echo '400 Bad Request';
-  echo 'No machine provided';
+  echo 'No build type provided';
   exit;
 }
 
-$machinefile = "machines/$machine.php";
-if (!file_exists($machinefile)) {
+$buildfile = "builds/$build.php";
+if (!file_exists($buildfile)) {
   header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
   echo '404 Not Found';
-  echo "Machine '$machine' not found";
+  echo "Machine '$build' not found";
   exit;
 }
 
-include $machinefile;
+include $buildfile;
 
-// Parse OS (takes precedence over definitions in machinefile)
+// Parse OS (takes precedence over definitions in buildfile)
 if ($_GET['os']) {
   list($os_name, $os_version) = explode('-', $_GET['os'], 2);
 }
