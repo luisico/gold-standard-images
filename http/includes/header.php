@@ -13,12 +13,13 @@ if ($build = $_GET['build']) {
   include $buildfile;
 }
 
-
-// Parse OS (takes precedence over definitions in buildfile)
+// OS (overwrite defaults)
 if ($_GET['os']) {
   list($os_name, $os_version) = explode('-', $_GET['os'], 2);
 }
 
 // Set hostname and domain
-list($hostname, $domain) = explode('.', $fqdn, 2);
+if ($fqdn) {
+  list($hostname, $domain) = explode('.', $fqdn, 2);
+}
 ?>
