@@ -18,8 +18,8 @@ The system depends on three inputs:
 
 # Supported images
 
-### OS
-- Centos 7.2.1511
+## OS
+- Centos 7.2 (1511)
 - RedHat 7.2
 
 ### Providers
@@ -30,10 +30,10 @@ The system depends on three inputs:
 
 # Building artifacts
 
-First select the artifact name and OS template. Supported operating system are:
+First select the VM to produce. Supported operating system are:
 ``` sh
-vm_name=centos72 ; template=CentOS-7-x86_64-Minimal-1511
-vm_name=rhel72   ; template=rhel-server-7.2-x86_64
+vm_name=centos-7.2
+vm_name=rhel-7.2
 ```
 
 Then select the version to generate and other variables used by packer (a complete list can be found at the top of `template/main.json`), ie:
@@ -52,7 +52,7 @@ opts="-force"                     # forces overwriting of artifacts
 
 Run packer in parallel to generate the all artifacts and automatically upload them to their cloud providers (when available):
 ``` sh
-packer build $opts -var-file=templates/$template.json -var version=$version -var s3_bucket=$s3_bucket templates/main.json
+packer build $opts -var-file=templates/${vm_name}.json -var version=$version -var s3_bucket=$s3_bucket templates/main.json
 ```
 
 ## Provider specifics
@@ -226,6 +226,5 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 - Bigger disk size and allow to grow?
 - guest_os_type variables for vbox and VMware should go in OS template
 - Move vm_name out of OS templates?
-- Change vm_name to be similar to OS (ie CentOS-7.2.1511)
 - Add other options, ie locale, root pass, ...
 - Move files with options to example files
