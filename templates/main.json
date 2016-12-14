@@ -14,20 +14,7 @@
 
     "headless": "true",
     "iso_server": "http://jaca.ebi.ac.uk/~luisg/gsi",
-    "ks_server": "http://jaca.ebi.ac.uk/~luisg/gsi",
-
-    "aws_region": "eu-west-1",
-    "aws_s3_bucket": "mys3bucket",
-    "aws_tag": "mytag",
-
-    "vmware_cluster": "mycluster",
-    "vmware_datacenter": "mydatacenter",
-    "vmware_datastore": "mydatastore",
-    "vmware_host": "myhost",
-    "vmware_username": "myusername",
-    "vmware_password": "password",
-    "vmware_folder": "myfolder",
-    "vmware_network": "mynetwork"
+    "ks_server": "http://jaca.ebi.ac.uk/~luisg/gsi"
   },
 
   "builders": [

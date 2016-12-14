@@ -22,11 +22,14 @@ The system depends on three inputs:
 - Centos 7.2 (1511)
 - RedHat 7.2
 
-### Providers
-- Virtualbox
-- VMware
-- AWS
-- OpenStack
+## Providers
+- [AWS](#aws)
+- [Azure](#azure)
+- [Docker](#docker)
+- [Gcloud](#gcloud)
+- [OpenStack](#openstack)
+- [Virtualbox](#virtualbox)
+- [VMware](#vmware)
 
 # Building artifacts
 
@@ -39,12 +42,9 @@ vm_name=rhel-7.2
 Then select the version to generate and other variables used by packer (a complete list can be found at the top of `template/main.json`), ie:
 ``` sh
 version=0.0.0
-aws_s3_bucket=mys3bucket
-vmware_host=myhost
-gcloud_bucket=mygcpbucket
 ```
 
-Other options of interest are:
+Other useful options:
 ``` sh
 opts="-var headless=false"        # helps debugging kickstarts
 opts="-force"                     # forces overwriting of artifacts
@@ -52,24 +52,75 @@ opts="-force"                     # forces overwriting of artifacts
 
 Run packer in parallel to generate the all artifacts and automatically upload them to their cloud providers (when available):
 ``` sh
-packer build $opts -var-file=templates/${vm_name}.json -var version=$version -var s3_bucket=$s3_bucket templates/main.json
+packer build $opts -var-file=templates/${vm_name}.json -var version=${version} templates/main.json
 ```
 
-## Provider specifics
+## Providers
 
-### VMware
+## AWS
 
-Manually upload from a converted OVA artifact:
+### Upload
+
 ``` sh
-ovftool --name=${vm_name}-${version}-packer -dm=thin --vCloudTemplate --compress=1 artifacts/$version/${vm_name}/vmware/${vm_name}-${version}_vmware.vmx artifacts/$version/${vm_name}/vmware/${vm_name}.ova
+build=aws
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+aws_s3_bucket=mys3bucket
+
+cp $artdir/$artifact.ova s3://${aws_s3_bucket}/
+aws ec2 import-image --disk-container "Format=ova,UserBucket={S3Bucket=${aws_s3_bucket},S3Key=$artifact.ova}"
+aws ec2 describe-import-image-tasks
 ```
 
-### OpenStack
+## Azure
+
+### Upload
+
+``` sh
+build=azure
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+key=$(azure storage account keys list storage_account -g resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
+azure storage blob upload -t page -a storage_account -k $key --container images_container -f $artdir/$artifact.vhd
+```
+
+## Docker
+
+Manually import image:
+
+### Import
+
+``` sh
+build=docker
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+docker import $artdir/$artifact.tar.gz $artifact
+```
+
+## Gcloud
+
+### Upload
+
+``` sh
+build=gcloud
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+gcloud_bucket=mygcpbucket
+
+gsutil cp $artdir/$artifact.tar.gz gs://${gcloud_bucket}
+gcloud compute images create $artifact --source-uri gs://${gcloud_bucket}/$artifact.tar.gz
+```
+
+## OpenStack
 
 To manage an OpenStack cloud from command line requires the [OpenStack command-line](http://docs.openstack.org/user-guide/common/cli-install-openstack-command-line-clients.html) client. Instructions to install and use the client can be found in its webpage. Briefly, being a python tool it is best to install it in a virtualenv:
 ``` sh
-virtualenv python-openstack
-. python-openstack/bin/activate
+virtualenv ~/python-openstack
+. ~/python-openstack/bin/activate
 pip install python-openstackclient
 ```
 
@@ -78,35 +129,33 @@ We also need to configure our system to access the OpenStack cloud. The easies r
 . openstack.rc
 ```
 
-Upload:
+### Upload
+
 ``` sh
-openstack image create --disk-format qcow2 --file artifacts/$version/${vm_name}/openstack/${vm_name}-${version}_openstack.qcow2 --tag packer --protected --public ${vm_name}-${version}-packer
+build=openstack
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+. ~/python-openstack/bin/activate
+openstack image create --disk-format qcow2 --file $artdir/$artifact.qcow2 --tag packer --protected --public $artifact
 ```
 
-# Azure
+## VirtualBox
 
-Manually upload the VHD image:
+TODO
 
-``` sh
-key=$(azure storage account keys list storage_account -g resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
-azure storage blob upload -t page -a storage_account -k $key --container images_container -f artifacts/$version/${vm_name}/azure/${vm_name}-${version}-packer.vhd
-```
+## VMware
 
-# Google Compute Cloud
-
-Manually upload the image:
+### Upload
 
 ``` sh
-gsutil cp artifacts/$version/${vm_name}/gcloud/${vm_name}-${version}_gcloud.tar.gz gs://${gcloud_bucket}
-gcloud compute images create ${vm_name}-${version}-packer --source-uri gs://${gcloud_bucket}/${vm_name}-${version}_gcloud.tar.gz
-```
+build=vmware
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
 
-# Docker
+vmware_host=myhost
 
-Manually import image:
-
-``` sh
-docker import artifacts/$version/${vm_name}/docker/${version}_${vm_name}.tar.gz ${vm_name}-${version}-packer
+ovftool --name=$artifact -dm=thin --vCloudTemplate --compress=1 $artdir/$artifact.vmx $artdir/$artifact.ova
 ```
 
 # Components
@@ -228,3 +277,5 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 - Move vm_name out of OS templates?
 - Add other options, ie locale, root pass, ...
 - Move files with options to example files
+- Document installation of tools for all providers, ie azure-cli
+- Document dependencies for providers, ie virt-tar-out for docker
