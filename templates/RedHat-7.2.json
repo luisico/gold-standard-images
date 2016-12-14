@@ -1,5 +1,5 @@
 {
-  "vm_name": "rhel-7.2",
+  "vm_name": "RedHat-7.2",
   "os_name": "RedHat",
   "os_version": "7.2",
   "iso": "rhel-server-7.2-x86_64-boot",
