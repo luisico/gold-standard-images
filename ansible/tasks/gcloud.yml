@@ -22,7 +22,7 @@
   template: dest=/etc/yum.repos.d/google-cloud.repo src=templates/google-cloud.repo.j2 owner=root group=root mode=0644
 
 - name: Install packages
-  yum: name={{item}} state=latest enablerepo=google-cloud-compute
+  yum: name={{item}} state=latest enablerepo='*'
   with_items:
     - python
     - google-compute-engine

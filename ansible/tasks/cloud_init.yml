@@ -1,6 +1,6 @@
 ---
 - name: Install CloudInit
-  yum: name=cloud-init state=latest
+  yum: name=cloud-init state=latest enablerepo='*'
 
 - name: Configure CloudInit
   template: dest=/etc/cloud/cloud.cfg.d/50_local.cfg src=templates/cloud_init_local.cfg.j2 mode=0644 owner=root group=root
