@@ -1,6 +1,18 @@
 ---
-- name: Base EPM repos for rhel 7
-  yum_repository: name={{item.name}} description='{{item.desc}}' baseurl=http://epm.ebi.ac.uk/epm/baselines/{{item.epm}} gpgcheck=no state=present owner=root group=root mode=0644
-  with_items:
-    - {name: rhel-7-server-rpms, desc: 'RHEL Server 7 x86_64', epm: rh7-network/rhel-7-server-rpms}
-  when: ansible_distribution == 'RedHat' and ansible_distribution_major_version|int == 7
+# Not idempotent: first deletes all repos, then add selected repos
+- block:
+  - name: List all repositories
+    find: paths=/etc/yum.repos.d/ patterns=*.repo
+    register: current_repos
+
+  - name: Remove all repositories
+    file: path={{item.path}} state=absent
+    with_items: '{{current_repos.files}}'
+
+  - name: Add selected repositories
+    yum_repository: file={{item.file | default(omit)}} name={{item.name}} description='{{item.name}}' params='{{item}}'
+    with_items: '{{repos[ansible_distribution][ansible_distribution_version]}}'
+
+  when:
+    - repos[ansible_distribution][ansible_distribution_version] is defined
+    - repos[ansible_distribution][ansible_distribution_version]

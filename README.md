@@ -18,33 +18,37 @@ The system depends on three inputs:
 
 # Supported images
 
-### OS
-- Centos 7.2.1511
+## OS
+
+- CentOS 7.2.1511
 - RedHat 7.2
 
-### Providers
-- Virtualbox
-- VMware
-- AWS
-- OpenStack
+Note that OS name and versions are named after the value reported by `ansible_distribution` and `ansible_distribution_version`.
+
+## Providers
+
+- [AWS](#aws)
+- [Azure](#azure)
+- [Docker](#docker)
+- [Gcloud](#gcloud)
+- [OpenStack](#openstack)
+- [Virtualbox](#virtualbox)
+- [VMware](#vmware)
 
 # Building artifacts
 
-First select the artifact name and OS template. Supported operating system are:
+First select the VM to produce. Supported operating system are:
 ``` sh
-vm_name=centos72 ; template=CentOS-7-x86_64-Minimal-1511
-vm_name=rhel72   ; template=rhel-server-7.2-x86_64
+vm_name=CentOS-7.2.1511
+vm_name=RedHat-7.2
 ```
 
 Then select the version to generate and other variables used by packer (a complete list can be found at the top of `template/main.json`), ie:
 ``` sh
 version=0.0.0
-aws_s3_bucket=mys3bucket
-vmware_host=myhost
-gcloud_bucket=mygcpbucket
 ```
 
-Other options of interest are:
+Other useful options:
 ``` sh
 opts="-var headless=false"        # helps debugging kickstarts
 opts="-force"                     # forces overwriting of artifacts
@@ -52,24 +56,75 @@ opts="-force"                     # forces overwriting of artifacts
 
 Run packer in parallel to generate the all artifacts and automatically upload them to their cloud providers (when available):
 ``` sh
-packer build $opts -var-file=templates/$template.json -var version=$version -var s3_bucket=$s3_bucket templates/main.json
+packer build $opts -var-file=templates/${vm_name}.json -var version=${version} templates/main.json
 ```
 
-## Provider specifics
+## Providers
 
-### VMware
+## AWS
 
-Manually upload from a converted OVA artifact:
+### Upload
+
 ``` sh
-ovftool --name=${vm_name}-${version}-packer -dm=thin --vCloudTemplate --compress=1 artifacts/$version/${vm_name}/vmware/${vm_name}-${version}_vmware.vmx artifacts/$version/${vm_name}/vmware/${vm_name}.ova
+build=aws
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+aws_s3_bucket=mys3bucket
+
+cp $artdir/$artifact.ova s3://${aws_s3_bucket}/
+aws ec2 import-image --disk-container "Format=ova,UserBucket={S3Bucket=${aws_s3_bucket},S3Key=$artifact.ova}"
+aws ec2 describe-import-image-tasks
 ```
 
-### OpenStack
+## Azure
+
+### Upload
+
+``` sh
+build=azure
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+key=$(azure storage account keys list storage_account -g resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
+azure storage blob upload -t page -a storage_account -k $key --container images_container -f $artdir/$artifact.vhd
+```
+
+## Docker
+
+Manually import image:
+
+### Import
+
+``` sh
+build=docker
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+docker import $artdir/$artifact.tar.gz $artifact
+```
+
+## Gcloud
+
+### Upload
+
+``` sh
+build=gcloud
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+gcloud_bucket=mygcpbucket
+
+gsutil cp $artdir/$artifact.tar.gz gs://${gcloud_bucket}
+gcloud compute images create $artifact --source-uri gs://${gcloud_bucket}/$artifact.tar.gz
+```
+
+## OpenStack
 
 To manage an OpenStack cloud from command line requires the [OpenStack command-line](http://docs.openstack.org/user-guide/common/cli-install-openstack-command-line-clients.html) client. Instructions to install and use the client can be found in its webpage. Briefly, being a python tool it is best to install it in a virtualenv:
 ``` sh
-virtualenv python-openstack
-. python-openstack/bin/activate
+virtualenv ~/python-openstack
+. ~/python-openstack/bin/activate
 pip install python-openstackclient
 ```
 
@@ -78,35 +133,33 @@ We also need to configure our system to access the OpenStack cloud. The easies r
 . openstack.rc
 ```
 
-Upload:
+### Upload
+
 ``` sh
-openstack image create --disk-format qcow2 --file artifacts/$version/${vm_name}/openstack/${vm_name}-${version}_openstack.qcow2 --tag packer --protected --public ${vm_name}-${version}-packer
+build=openstack
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+. ~/python-openstack/bin/activate
+openstack image create --disk-format qcow2 --file $artdir/$artifact.qcow2 --tag packer --protected --public $artifact
 ```
 
-# Azure
+## VirtualBox
 
-Manually upload the VHD image:
+TODO
 
-``` sh
-key=$(azure storage account keys list storage_account -g resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
-azure storage blob upload -t page -a storage_account -k $key --container images_container -f artifacts/$version/${vm_name}/azure/${vm_name}-${version}-packer.vhd
-```
+## VMware
 
-# Google Compute Cloud
-
-Manually upload the image:
+### Upload
 
 ``` sh
-gsutil cp artifacts/$version/${vm_name}/gcloud/${vm_name}-${version}_gcloud.tar.gz gs://${gcloud_bucket}
-gcloud compute images create ${vm_name}-${version}-packer --source-uri gs://${gcloud_bucket}/${vm_name}-${version}_gcloud.tar.gz
-```
+build=vmware
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
 
-# Docker
+vmware_host=myhost
 
-Manually import image:
-
-``` sh
-docker import artifacts/$version/${vm_name}/docker/{{user `version`}}_{{build_name}}.tar.gz {{user `vm_name`}}-{{user `version`}}-packer
+ovftool --name=$artifact -dm=thin --vCloudTemplate --compress=1 $artdir/$artifact.vmx $artdir/$artifact.ova
 ```
 
 # Components
@@ -130,7 +183,7 @@ The main templates will bootstrap artifacts for multiple providers, usually prov
 
 ## Kickstarts
 
-Kickstart files are located in the `http/` directory. The main kickstart file is `ks.php`, and requires a server running php. On a local computer the easiest is to install apache and symlink this directory to `~/public_html`. The kickstart system is divided in multiple files that get included depending on the variables defined the machine file for the specified server (found in `machines/`). All Packer.io templates will use definitions found `packer.php` while bare metal servers will look for definition files with their hostname. Different kickstart sections get included for metal or packer appropriately. URLs to target different servers are in the form of `http://server.domain:port/ks.php?machine=packer` (substitute `packer` with any machine defined under `machines/`).
+Kickstart files are located in the `http/` directory. The main kickstart file is `ks.php`, and requires a server running php. On a local computer the easiest is to install apache and symlink this directory to `~/public_html`. The kickstart system is divided in multiple files that get included depending on the variables defined the build type and build files for the specified server (found in `builds/`). All Packer.io templates will use definitions found in `builds/virtual` while bare metal servers will look for definition files in `build/metal`. Different kickstart sections get included for metal or virtual builds appropriately. URLs to target different servers are in the form of `http://server.domain:port/ks.php?build=buildtype/build`, where `buildtype` is `virtual` or `metal` and `build` is a specific build or host. If buildtype is not defined, `virtual` is used.
 
 ### First boot options
 
@@ -156,28 +209,24 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 
 ## Directory Structure
 
+Note: to simplify the description, only `CentOS` is listed here where multiple OS are possible, and only `aws` is listed where multiple builder/providers are possible.
+
+
 ```
 |-- ansible/                                      Ansible playbooks
 |   |-- base.yml                                  Base tasks included in all playbooks
-|   |-- virtualbox.yml                            One playbook per builder
-|   |-- vmware.yml
-|   |-- ...
+|   |-- aws.yml                                   One playbook per builder
 |   |-- tasks/                                    Tasks used in playbooks
 |   |-- files/                                    Files used by Ansible tasks
 |   `-- templates/                                Templates used by Ansible tasks
 |-- artifacts/                                    Artifacts (intermediate/end images)
 |   |-- 0.0.0/                                    Ordered by version
-|   |   `-- rhel72/                               and OS
-|   |       |-- aws/                              Each template generates at least 2 artifacts
-|   |       |   `-- rhel72-aws-0.0.0.ova            A template specific artifact
-|   |       |   `-- rhel72-aws-0.0.0.box            A vagrant box for debugging purposes
-|   |       .                                       Other files might be generated by packer
-|   |       `-- vmware/                             Directory structure is in VC, but
-|   |           |-- rhel72-aws-0.0.0.box            not the artifacts [!VC]
-|   |           |-- rhel72-aws-0.0.0.ova
-|   |           |-- ...
-|   |           `-- rhel72-aws-0.0.0.vmdk
-|   `-- RedHat-7.2.json                           Vagrant boxes catalog metadata (one per OS)
+|   |   `-- CentOS-7.2.1511/                        and OS
+|   |       `-- aws/                              Each template generates at least 2 artifacts
+|   |           |-- CentOS-7.2.1511-0.0.0_aws.ova   A template specific artifact
+|   |           |-- CentOS-7.2.1511-0.0.0_aws.box   A vagrant box for debugging purposes
+|   |           `-- ...                             Other files might be generated by packer. Artifacts are not kept in VC
+|   `-- CentOS-7.2.1511.json                      Vagrant boxes catalog metadata (one per OS)
 |-- http/                                         HTTP server directory for Packer.io and metal PXE
 |   |-- ks.php                                    Kickstart entry point
 |   |-- includes/                                 Kickstart include files
@@ -193,15 +242,19 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 |   |   |   |-- post.php
 |   |   |   `-- rootpw.php
 |   |   `-- repos/                                Repositoy URLs for OSs
-|   |       |-- CentOS.php
-|   |       `-- RedHat.php
-|   |-- machines/                                 Per machine definition (used mostly for bare metal)
-|   |   `-- packer.php                            Definitions for machines bootstrap by Packer.io
+|   |       `-- CentOS.php
+|   |-- builds/                                   Per build type definitions
+|   |   |-- defaults.php                          Common defaults for all builds
+|   |   |-- virtual
+|   |   |   |-- defaults.php                      Default options for virtual builds
+|   |   |   `-- aws.php                           Options for specific builds
+|   |   `-- metal
+|   |   |   |-- defaults.php                      Default options for metal hosts
+|   |       `-- {host1,...}.php                   Options for specific hosts
 |   ` -- isos/                                    Locally downloaded isos
-|       |-- RedHat/                               Ordered by OS
-|       |   `-- 7.2/                                and version
-|       |     `-- rhel-server-7.2-x86_64-boot.iso
-|       `-- CentOS/
+|        `-- CentOS/                                Ordered by OS and version
+|          `-- 7.2.1511/
+|            `-- CentOS-7-x86_64-Minimal-1511.iso
 |-- keys/                                         SSH keys [!VC]
 |   |-- packer
 |   |-- packer.pub
@@ -213,8 +266,7 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 |   `-- zero.sh                                   Compress boxes
 |-- templates/                                    Packer.io templates
 |   |-- main.json                                 Parallel template
-|   |-- rhel-server-7.2-x86_64.json               OS specific variables
-|   `-- CentOS-7-x86_64-Minimal-1511.json
+|   `-- CentOS-7.2.1511.json                      OS specific variables
 |-- test/                                         Vagrant tests
 |   `-- Vagrantfile
 `-- .gitignore                                    Files to ignore in VC
@@ -223,9 +275,11 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 # TODO
 
 - User vagrant? Different users might be needed for each artifact
-- Use EPM for all repositories
 - Document generation of vagrant and packer keys
 - Bigger disk size and allow to grow?
 - guest_os_type variables for vbox and VMware should go in OS template
 - Move vm_name out of OS templates?
-- Change vm_name to be similar to OS (ie CentOS-7.2.1511)
+- Add other options, ie locale, root pass, ...
+- Move files with options to example files
+- Document installation of tools for all providers, ie azure-cli
+- Document dependencies for providers, ie virt-tar-out for docker

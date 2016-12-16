@@ -3,7 +3,7 @@ zerombr
 
 <?php
 if ($boot) {
-  echo "part /boot --fstype ext4 --size 150 --ondisk sda\n";
+  echo "part /boot --fstype $fstype --size 150 --ondisk sda\n";
 }
 
 if ($lvm) {
@@ -12,9 +12,9 @@ if ($lvm) {
   if ($swap) {
     echo "logvol swap --fstype swap --name LV_swap --vgname VG_localhost_sys --size 1024\n";
   }
-  echo "logvol / --fstype ext4 --name LV_localhost_sys --vgname VG_localhost_sys --size 1 --grow\n";
+  echo "logvol / --fstype $fstype --name LV_localhost_sys --vgname VG_localhost_sys --size 1 --grow\n";
 
 } else {
-  echo "part / --fstype ext4 --size 1 --grow --ondisk sda\n";
+  echo "part / --fstype $fstype --size 1 --grow --ondisk sda\n";
 }
 ?>

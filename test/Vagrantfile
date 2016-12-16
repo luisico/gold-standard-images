@@ -6,10 +6,10 @@ KEYSDIR = MAINDIR + 'keys'
 # For vagrant servers (currently not working with local paths)
 # ENV['VAGRANT_SERVER_URL'] = 'file://~/provision/boxes/artifacts'
 
-# Default is latest rhel 7.2 for virtualbox
+# Default is latest RedHat 7.2 for virtualbox
 default = {
   version: ARTIFACTSDIR.children.select{|p| p.directory? and p.basename.to_s.match(/^\d+\.\d+\.\d+$/)}.sort.last.basename.to_s,
-  name: 'rhel72',
+  name: 'RedHat-7.2',
   builder: 'virtualbox'
 }
 

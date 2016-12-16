@@ -1,34 +1,37 @@
 <?php
 header('Content-type: text/plain');
 
-// Defaults hardware
-$hardware = 'metal';
+// Read defaults
+include "builds/defaults.php";
 
-// Parse machine
-$machine = $_GET['machine'];
+// Build options (overwrite defaults)
+if ($_GET['build']) {
+  list($buildtype, $build) = explode('/', $_GET['build'], '2');
 
-if (!$machine) {
-  header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request', true, 400);
-  echo '400 Bad Request';
-  echo 'No machine provided';
-  exit;
+  # Build type default options
+  $buildfile = "builds/$buildtype/defaults.php";
+  if (!file_exists($buildfile)) {
+    echo "# Build type '$buildtype' not found... using $hardware defaults\n\n";
+    $buildtype = $hardware;
+    $buildfile = "builds/$buildtype/defaults.php";
+  }
+  include $buildfile;
+
+  # Build options
+  $buildfile = "builds/$buildtype/$build.php";
+  if (!file_exists($buildfile)) {
+    echo "# Build '$build' not found... continuing with defaults\n\n";
+  }
+  include $buildfile;
 }
 
-$machinefile = "machines/$machine.php";
-if (!file_exists($machinefile)) {
-  header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
-  echo '404 Not Found';
-  echo "Machine '$machine' not found";
-  exit;
-}
-
-include $machinefile;
-
-// Parse OS (takes precedence over definitions in machinefile)
+// OS (overwrite defaults)
 if ($_GET['os']) {
   list($os_name, $os_version) = explode('-', $_GET['os'], 2);
 }
 
 // Set hostname and domain
-list($hostname, $domain) = explode('.', $fqdn, 2);
+if ($fqdn) {
+  list($hostname, $domain) = explode('.', $fqdn, 2);
+}
 ?>
