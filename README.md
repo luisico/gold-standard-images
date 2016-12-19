@@ -31,7 +31,7 @@ Note that OS name and versions are named after the value reported by `ansible_di
 This is the list of supported providers and their build name (and build type):
 - [Amazon Web Services](#amazon-web-services): `aws` (`virtualbox-iso`)
 - [Docker](#docker): `docker` (`qemu`)
-- [Google Cloud Platform](#google-cloud-platform): `gcloud` (`qemu`)
+- [Google Cloud Platform](#google-cloud-platform): `gcp` (`qemu`)
 - [Microsoft Azure](#microsoft-azure): `azure` (`qemu`)
 - [OpenStack](#openstack): `openstack` (`qemu`)
 - [Virtualbox](#virtualbox): `virtualbox` (`virtualbox-iso`)
@@ -118,14 +118,14 @@ Install and configure [CLOUD SDK](https://cloud.google.com/sdk) by following the
 The following instructions assume  CLOUD SDK is installed and configured to access your GCP account. In particular, the `gsutil` and `gcloud` tools need to be available. In addition a GCP bucket for upload of the image before importing must already be available.
 
 ``` sh
-build=gcloud
+build=gcp
 artdir=artifacts/${version}/${vm_name}/${build}
 artifact=${vm_name}-${version}_${build}
 
-gcloud_bucket=mygcpbucket
+gcp_bucket=mygcpbucket
 
-gsutil cp $artdir/$artifact.tar.gz gs://${gcloud_bucket}
-gcloud compute images create $artifact --source-uri gs://${gcloud_bucket}/$artifact.tar.gz
+gsutil cp $artdir/$artifact.tar.gz gs://${gcp_bucket}
+gcloud compute images create $artifact --source-uri gs://${gcp_bucket}/$artifact.tar.gz
 ```
 
 ### Microsoft Azure
@@ -379,4 +379,3 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 - Add other options, ie locale, root pass, ...
 - Move files with options to example files
 - Move ovftool to post-processors in template
-- Rename gcloud to gcp

@@ -188,7 +188,7 @@
       ]
     },
     {
-      "name": "gcloud",
+      "name": "gcp",
       "type": "qemu",
       "headless": "{{user `headless`}}",
       "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
@@ -288,7 +288,7 @@
     {
       "type": "shell-local",
       "keep_input_artifact": true,
-      "only": ["gcloud"],
+      "only": ["gcp"],
       "environment_vars": [
         "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
         "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"

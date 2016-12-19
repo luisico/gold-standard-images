@@ -53,7 +53,7 @@
     ServerAliveInterval: 420
 
 - name: Recommended kernel parameters
-  template: dest=/etc/sysctl.d/12-gcloud-recommended.conf src=gcloud-recommended-sysctl.conf.j2 owner=root group=root mode=0644
+  template: dest=/etc/sysctl.d/12-gcp-recommended.conf src=gcp-recommended-sysctl.conf.j2 owner=root group=root mode=0644
 
 - name: Configure network default IPv4 interface
   lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ansible_default_ipv4.interface}} regexp='^(#\s*)?{{item.key}}=' line='{{item.key}}={{item.value}}' state=present owner=root group=root mode=0644

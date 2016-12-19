@@ -1,6 +1,6 @@
 ---
-- name: gcloud
+- name: gcp
   hosts: all
   tasks:
     - include: base.yml
-    - include: tasks/gcloud.yml
+    - include: tasks/gcp.yml
