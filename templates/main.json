@@ -307,6 +307,23 @@
         "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
       ],
       "inline": ["virt-tar-out -a $OUTDIR/$OUTNAME.qcow2 / - | gzip > $OUTDIR/$OUTNAME.tar.gz"]
-    }
+    },
+    [
+      {
+        "type": "artifice",
+        "only": ["vmware"],
+        "files": ["artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}/{{user `vm_name`}}-{{user `version`}}_{{build_name}}.vmx"]
+      },
+      {
+        "type": "shell-local",
+        "keep_input_artifact": true,
+        "only": ["vmware"],
+        "environment_vars": [
+          "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
+          "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
+        ],
+        "inline": ["ovftool --quiet --name=$OUTNAME --diskMode=thin --vCloudTemplate --compress=1 $OUTDIR/$OUTNAME.vmx $OUTDIR/$OUTNAME.ova"]
+      }
+    ]
   ]
 }

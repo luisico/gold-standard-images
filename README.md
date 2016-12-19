@@ -223,18 +223,16 @@ end
 
 ### VMware
 
-To build VMware images VMware Player or VMware Workstation is needed. See [build dependencies](#vmware-iso) for details.
+To build VMware images VMware Player or VMware Workstation is needed. See [build dependencies](#vmware-iso) for details. Additionally, the resulting artifacts gets converted to OVA format with `ovftool` (see [build dependencies](#ovftool) for details) as part of the build.
 
 #### Upload
 
-To upload the artifact we first need to convert it to an OVA format with `ovftool` (see [build dependencies](#ovftool) for details). After conversion, login to your VMware account to manually upload the OVA image.
+To upload the artifact, first login to your VMware account and  manually upload the OVA image at `$artdir/$artifact.ova`.
 
 ``` sh
 build=vmware
 artdir=artifacts/${version}/${vm_name}/${build}
 artifact=${vm_name}-${version}_${build}
-
-ovftool --name=$artifact -dm=thin --vCloudTemplate --compress=1 $artdir/$artifact.vmx $artdir/$artifact.ova
 ```
 
 # Components
@@ -378,4 +376,3 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 - Move vm_name out of OS templates?
 - Add other options, ie locale, root pass, ...
 - Move files with options to example files
-- Move ovftool to post-processors in template
