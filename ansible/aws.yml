@@ -1,7 +1,12 @@
 ---
-- name: aws
-  hosts: all
-  tasks:
-    - include: base.yml
-    - include: tasks/aws.yml
-    - include: tasks/cloud_init.yml
+# See https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/building-shared-amis.html
+
+- name: Disable root logins with password
+  lineinfile: dest=/etc/ssh/sshd_config regexp='^#?PermitRootLogin' line='PermitRootLogin without-password' state=present
+
+- name: Disable Local Root Access
+  command: passwd -l root
+  failed_when: "'passwd: Success' not in last.stdout"
+  register: last
+
+- include: tasks/cloud_init.yml

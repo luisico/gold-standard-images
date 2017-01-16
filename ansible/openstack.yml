@@ -1,7 +1,29 @@
 ---
-- name: openstack
-  hosts: all
-  tasks:
-    - include: base.yml
-    - include: tasks/openstack.yml
-    - include: tasks/cloud_init.yml
+# See http://docs.openstack.org/image-guide
+
+- name: Install ACPI service
+  yum: name=acpid state=latest
+
+- name: Start ACPI service
+  service: name=acpid enabled=yes state=started
+
+- name: Disable the zerconf route
+  lineinfile: dest=/etc/sysconfig/network regexp="^NOZEROCONF" line="NOZEROCONF=yes" owner=root group=root mode=0644 backup=yes
+
+- command: sed -n 's/GRUB_CMDLINE_LINUX="\(.*\)"/\1/p' /etc/default/grub
+  register: grub_cmdline
+  changed_when: false
+
+- name: Log boot to the console
+  lineinfile: dest=/etc/default/grub regexp='^{{item.key}}' line='{{item.key}}="{{grub_cmdline.stdout.split() | union(item.add) | difference(item.del) | join(" ")}}"' owner=root group=root mode=0644
+  with_items:
+    - key: GRUB_CMDLINE_LINUX
+      add: ['console=tty0', 'console=ttyS0,115200n8']
+      del: ['rhgb', 'quiet']
+  register: grub
+
+- name: Regenerate grub configuration
+  command: grub2-mkconfig -o /boot/grub2/grub.cfg
+  when: grub.changed
+
+- include: tasks/cloud_init.yml

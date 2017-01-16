@@ -1,0 +1,12 @@
+---
+- name: '{{build}}'
+  hosts: all
+  tasks:
+    # Common tasks to all builds
+    - include: tasks/repos.yml
+    - include: tasks/config_sshd.yml
+    - include: tasks/random_password.yml user=root
+    - include: tasks/ssh_keys.yml user=root key=packer
+
+    # Build specific tasks
+    - include: '{{build}}.yml'

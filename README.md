@@ -250,11 +250,9 @@ The customized kickstart also understands the following options:
 
 ## Ansible playbooks
 
-Each builder will provision the image by calling an Ansbile playbook of the same name, ie `virtualbox.yml`. These playbooks start by running base tasks from `base.yml` common to all builders, and then running the builder specific tasks.
+Each builder will provision the image by running Ansbile playbook `ansible/site.yml`, which in turns runs base tasks from `ansible/base.yml` (common to all builders), and then builder specific tasks based on the build name, ie `ansible/aws.yml`.
 
-The structure of these playbooks does not conform to best practices due to the specificity of this projects. In particular, tasks are used directly instead of roles. Tasks (as well as templates and files) are shared among all playbooks to better maintain consistency among generated artifacts.
-
-Note that idempotency is not key when running Ansible in this project because a playbook is only run once.
+The structure of these playbooks might not conform to best practices due to the specificity of this projects. In particular, tasks are used directly instead of roles. Tasks (as well as templates and files) are shared among all playbooks to better maintain consistency among generated artifacts. Note that idempotency is not key when running Ansible in this project because a playbook is only run once.
 
 ## Cleanup shell scripts
 
@@ -269,8 +267,11 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 
 ```
 |-- ansible/                                      Ansible playbooks
-|   |-- base.yml                                  Base tasks included in all playbooks
-|   |-- aws.yml                                   One playbook per builder
+|   |-- site.yml                                  Main playbook for all Packer builds
+|   |-- base.yml                                  Base tasks common to all Packer builds
+|   |-- aws.yml                                   Specific playbook for each Packer build
+|   |-- group_vars/
+|   |   `-- all.yml                               Variables for all playbooks
 |   |-- tasks/                                    Tasks used in playbooks
 |   |-- files/                                    Files used by Ansible tasks
 |   `-- templates/                                Templates used by Ansible tasks

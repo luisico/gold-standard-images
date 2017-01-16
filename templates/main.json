@@ -260,7 +260,7 @@
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "ansible/{{build_name}}.yml",
+      "playbook_file": "ansible/site.yml",
       "sftp_command": "/usr/libexec/openssh/sftp-server -e",
       "user": "root",
       "extra_arguments": [ "-v", "-e build={{build_name}}" ]

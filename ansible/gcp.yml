@@ -1,6 +1,62 @@
 ---
-- name: gcp
-  hosts: all
-  tasks:
-    - include: base.yml
-    - include: tasks/gcp.yml
+# Ref: https://cloud.google.com/compute/docs/tutorials/building-images
+
+- name: Collect grub cmdline configuration
+  command: sed -n 's/GRUB_CMDLINE_LINUX="\(.*\)"/\1/p' /etc/default/grub
+  register: grub_cmdline
+  changed_when: false
+
+- name: Log boot to the console
+  lineinfile: dest=/etc/default/grub regexp='^{{item.key}}' line='{{item.key}}="{{grub_cmdline.stdout.split() | union(item.add) | difference(item.del) | join(" ")}}"' owner=root group=root mode=0644
+  with_items:
+    - key: GRUB_CMDLINE_LINUX
+      add: ['console=ttyS0,38400n8']
+      del: ['rhgb', 'quiet', 'crashkernel=auto']
+  register: grub
+
+- name: Regenerate grub configuration
+  command: grub2-mkconfig -o /boot/grub2/grub.cfg
+  when: grub.changed
+
+- name: Drop Google Cloud Compute repo
+  template: dest=/etc/yum.repos.d/google-cloud.repo src=templates/google-cloud.repo.j2 owner=root group=root mode=0644
+
+- name: Install packages
+  yum: name={{item}} state=latest enablerepo='*'
+  with_items:
+    - python
+    - google-compute-engine
+    - google-compute-engine-init
+    - google-config
+
+- name: Secure sshd config
+  lineinfile: dest=/etc/ssh/sshd_config regexp='^(#\s*)?{{item.key}}' line='{{item.key}} {{item.value}}' state=present owner=root group=root mode=0644
+  with_dict:
+    PasswordAuthentication: 'no'
+    PermitRootLogin: 'without-password'
+    PermitTunnel: 'no'
+    AllowTcpForwarding: 'yes'
+    X11Forwarding: 'no'
+    ClientAliveInterval: 420
+
+- name: Secure ssh config
+  lineinfile: dest=/etc/ssh/ssh_config regexp='^(#\s*)?{{item.key}}' line='{{item.key}} {{item.value}}' state=present owner=root group=root mode=0644
+  with_dict:
+    Host: '*'
+    Protocol: 2
+    ForwardAgent: 'no'
+    ForwardX11: 'no'
+    HostbasedAuthentication: 'no'
+    StrictHostKeyChecking: 'no'
+    Ciphers: aes128-ctr,aes192-ctr,aes256-ctr,arcfour256,arcfour128,aes128-cbc,3des-cbc
+    Tunnel: 'no'
+    ServerAliveInterval: 420
+
+- name: Recommended kernel parameters
+  template: dest=/etc/sysctl.d/12-gcp-recommended.conf src=gcp-recommended-sysctl.conf.j2 owner=root group=root mode=0644
+
+- name: Configure network default IPv4 interface
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ansible_default_ipv4.interface}} regexp='^(#\s*)?{{item.key}}=' line='{{item.key}}={{item.value}}' state=present owner=root group=root mode=0644
+  with_dict:
+    IPV6INIT: 'no'
+    MTU: 1460
