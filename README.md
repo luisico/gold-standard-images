@@ -28,14 +28,14 @@ Note that OS name and versions are named after the values reported by `ansible_d
 
 ## Providers
 
-This is the list of supported providers and their build name (and build type):
-- [Amazon Web Services](#amazon-web-services): `aws` (`virtualbox-iso`)
-- [Docker](#docker): `docker` (`qemu`)
-- [Google Cloud Platform](#google-cloud-platform): `gcp` (`qemu`)
-- [Microsoft Azure](#microsoft-azure): `azure` (`qemu`)
-- [OpenStack](#openstack): `openstack` (`qemu`)
-- [Virtualbox](#virtualbox): `virtualbox` (`virtualbox-iso`)
-- [VMware](#vmware): `vmware` (`vmware-iso`)
+This is the list of supported providers by build name (Packer's build type in parenthesis):
+- `aws`: [Amazon Web Services](#amazon-web-services) (`virtualbox-iso`)
+- `azure`: [Microsoft Azure](#microsoft-azure) (`qemu`)
+- `docker`: [Docker](#docker) (`qemu`)
+- `gcp`: [Google Cloud Platform](#google-cloud-platform) (`qemu`)
+- `openstack`: [OpenStack](#openstack) (`qemu`)
+- `virtualbox`: [Virtualbox](#virtualbox) (`virtualbox-iso`)
+- `vmware`: [VMware](#vmware) (`vmware-iso`)
 
 # Building artifacts
 

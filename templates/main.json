@@ -20,21 +20,21 @@
 
   "builders": [
     {
-      "name": "virtualbox",
+      "name": "aws",
       "type": "virtualbox-iso",
       "headless": "{{user `headless`}}",
       "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}",
       "format": "ova",
 
-      "disk_size": "5120",
+      "disk_size": "3072",
 
       "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
       "iso_checksum_type": "sha256",
       "iso_checksum": "{{user `iso_checksum`}}",
 
       "guest_os_type": "RedHat_64",
-      "guest_additions_path": "/tmp/VBoxGuestAdditions.iso",
+      "guest_additions_mode": "disable",
 
       "ssh_username": "root",
       "ssh_password": "packer",
@@ -55,22 +55,151 @@
         [ "modifyvm", "{{.Name}}", "--audio", "none" ]
       ]
     },
+
     {
-      "name": "aws",
+      "name": "azure",
+      "type": "qemu",
+      "headless": "{{user `headless`}}",
+      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
+      "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
+      "format": "qcow2",
+
+      "disk_size": "2048",
+      "disk_interface": "ide",
+      "disk_compression": true,
+
+      "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "{{user `iso_checksum`}}",
+
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "ssh_timeout": "10m",
+
+      "shutdown_command": "shutdown -P now",
+
+      "http_directory": "",
+      "boot_command": [
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+      ],
+
+      "qemuargs": [
+        [ "-m", "1024M" ]
+      ]
+    },
+
+    {
+      "name": "docker",
+      "type": "qemu",
+      "headless": "{{user `headless`}}",
+      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
+      "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
+      "format": "qcow2",
+
+      "disk_size": "2048",
+      "disk_interface": "ide",
+      "disk_compression": true,
+
+      "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "{{user `iso_checksum`}}",
+
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "ssh_timeout": "10m",
+
+      "shutdown_command": "shutdown -P now",
+
+      "http_directory": "",
+      "boot_command": [
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+      ],
+
+      "qemuargs": [
+        [ "-m", "1024M" ]
+      ]
+    },
+
+    {
+      "name": "gcp",
+      "type": "qemu",
+      "headless": "{{user `headless`}}",
+      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
+      "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
+      "format": "qcow2",
+
+      "disk_size": "2048",
+      "disk_interface": "ide",
+      "disk_compression": true,
+
+      "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "{{user `iso_checksum`}}",
+
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "ssh_timeout": "10m",
+
+      "shutdown_command": "shutdown -P now",
+
+      "http_directory": "",
+      "boot_command": [
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+      ],
+
+      "qemuargs": [
+        [ "-m", "1024M" ]
+      ]
+    },
+
+    {
+      "name": "openstack",
+      "type": "qemu",
+      "headless": "{{user `headless`}}",
+      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
+      "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
+      "format": "qcow2",
+
+      "disk_size": "3072",
+      "disk_interface": "ide",
+      "disk_compression": true,
+
+      "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "{{user `iso_checksum`}}",
+
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "ssh_timeout": "10m",
+
+      "shutdown_command": "shutdown -P now",
+
+      "http_directory": "",
+      "boot_command": [
+        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
+      ],
+
+      "qemuargs": [
+        [ "-m", "1024M" ]
+      ]
+    },
+
+    {
+      "name": "virtualbox",
       "type": "virtualbox-iso",
       "headless": "{{user `headless`}}",
       "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}",
       "format": "ova",
 
-      "disk_size": "3072",
+      "disk_size": "5120",
 
       "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
       "iso_checksum_type": "sha256",
       "iso_checksum": "{{user `iso_checksum`}}",
 
       "guest_os_type": "RedHat_64",
-      "guest_additions_mode": "disable",
+      "guest_additions_path": "/tmp/VBoxGuestAdditions.iso",
 
       "ssh_username": "root",
       "ssh_password": "packer",
@@ -125,130 +254,6 @@
         "cpuid.coresPerSocket": "1",
         "ethernet0.pciSlotNumber": "32"
       }
-    },
-    {
-      "name": "openstack",
-      "type": "qemu",
-      "headless": "{{user `headless`}}",
-      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
-      "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
-      "format": "qcow2",
-
-      "disk_size": "3072",
-      "disk_interface": "ide",
-      "disk_compression": true,
-
-      "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
-      "iso_checksum_type": "sha256",
-      "iso_checksum": "{{user `iso_checksum`}}",
-
-      "ssh_username": "root",
-      "ssh_password": "packer",
-      "ssh_timeout": "10m",
-
-      "shutdown_command": "shutdown -P now",
-
-      "http_directory": "",
-      "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
-      ],
-
-      "qemuargs": [
-        [ "-m", "1024M" ]
-      ]
-    },
-    {
-      "name": "azure",
-      "type": "qemu",
-      "headless": "{{user `headless`}}",
-      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
-      "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
-      "format": "qcow2",
-
-      "disk_size": "2048",
-      "disk_interface": "ide",
-      "disk_compression": true,
-
-      "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
-      "iso_checksum_type": "sha256",
-      "iso_checksum": "{{user `iso_checksum`}}",
-
-      "ssh_username": "root",
-      "ssh_password": "packer",
-      "ssh_timeout": "10m",
-
-      "shutdown_command": "shutdown -P now",
-
-      "http_directory": "",
-      "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
-      ],
-
-      "qemuargs": [
-        [ "-m", "1024M" ]
-      ]
-    },
-    {
-      "name": "gcp",
-      "type": "qemu",
-      "headless": "{{user `headless`}}",
-      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
-      "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
-      "format": "qcow2",
-
-      "disk_size": "2048",
-      "disk_interface": "ide",
-      "disk_compression": true,
-
-      "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
-      "iso_checksum_type": "sha256",
-      "iso_checksum": "{{user `iso_checksum`}}",
-
-      "ssh_username": "root",
-      "ssh_password": "packer",
-      "ssh_timeout": "10m",
-
-      "shutdown_command": "shutdown -P now",
-
-      "http_directory": "",
-      "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
-      ],
-
-      "qemuargs": [
-        [ "-m", "1024M" ]
-      ]
-    },
-    {
-      "name": "docker",
-      "type": "qemu",
-      "headless": "{{user `headless`}}",
-      "output_directory": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
-      "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
-      "format": "qcow2",
-
-      "disk_size": "2048",
-      "disk_interface": "ide",
-      "disk_compression": true,
-
-      "iso_url": "{{user `iso_server`}}/isos/{{user `os_name`}}/{{user `os_version`}}/{{user `iso`}}.iso",
-      "iso_checksum_type": "sha256",
-      "iso_checksum": "{{user `iso_checksum`}}",
-
-      "ssh_username": "root",
-      "ssh_password": "packer",
-      "ssh_timeout": "10m",
-
-      "shutdown_command": "shutdown -P now",
-
-      "http_directory": "",
-      "boot_command": [
-        "<tab> ks={{user `ks_server`}}/ks.php?build=virtual/{{build_name}}&os={{user `os_name`}}-{{user `os_version`}} selinux=0<enter><wait>"
-      ],
-
-      "qemuargs": [
-        [ "-m", "1024M" ]
-      ]
     }
   ],
 
@@ -272,11 +277,6 @@
 
   "post-processors": [
     {
-      "type": "vagrant",
-      "keep_input_artifact": true,
-      "output": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}/{{user `vm_name`}}-{{user `version`}}_{{build_name}}.box"
-    },
-    {
       "type": "shell-local",
       "only": ["azure"],
       "keep_input_artifact": true,
@@ -286,6 +286,18 @@
       ],
       "inline": ["qemu-img convert -o subformat=fixed,force_size -O vpc $OUTDIR/$OUTNAME.qcow2 $OUTDIR/$OUTNAME.vhd"]
     },
+
+    {
+      "type": "shell-local",
+      "only": ["docker"],
+      "keep_input_artifact": true,
+      "environment_vars": [
+        "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
+        "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
+      ],
+      "inline": ["virt-tar-out -a $OUTDIR/$OUTNAME.qcow2 / - | gzip > $OUTDIR/$OUTNAME.tar.gz"]
+    },
+
     {
       "type": "shell-local",
       "only": ["gcp"],
@@ -299,16 +311,7 @@
         "tar -C $OUTDIR -Sczf $OUTDIR/$OUTNAME.tar.gz disk.raw && rm $OUTDIR/disk.raw"
       ]
     },
-    {
-      "type": "shell-local",
-      "only": ["docker"],
-      "keep_input_artifact": true,
-      "environment_vars": [
-        "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
-        "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
-      ],
-      "inline": ["virt-tar-out -a $OUTDIR/$OUTNAME.qcow2 / - | gzip > $OUTDIR/$OUTNAME.tar.gz"]
-    },
+
     {
       "type": "shell-local",
       "only": ["vmware"],
@@ -318,6 +321,12 @@
         "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
       ],
       "inline": ["ovftool --quiet --name=$OUTNAME --diskMode=thin --vCloudTemplate --compress=1 $OUTDIR/$OUTNAME.vmx $OUTDIR/$OUTNAME.ova"]
+    },
+
+    {
+      "type": "vagrant",
+      "keep_input_artifact": true,
+      "output": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}/{{user `vm_name`}}-{{user `version`}}_{{build_name}}.box"
     }
   ]
 }
