@@ -170,47 +170,13 @@ openstack image create --disk-format qcow2 --file $artdir/$artifact.qcow2 --tag 
 
 ### VirtualBox
 
-Virtualbox images are create to be used with Vagrant. A metadata file can be updated for each OS to manage the Vagrant images. These files are located in `artifacts/`, ie `artifacts/CentOS-7.2.1511.json`. Referencing this file in a `Vagrantfile` will automatically import the last image or prompt for an upgrade if a newer version is found. For example:
-
-``` json
-{
-  "name": "mynamespace/CentOS-7.2.1511",
-  "description": "Minimal Vagrant box for CentOS 7.2.1511 (64bits)",
-  "short_description": "CentOS-7.2.1511",
-  "versions": [
-    {
-      "version": "1.0.0",
-      "status": "active",
-      "providers": [
-        {
-          "name": "virtualbox",
-          "url": "/path/to/artifacts/CentOS-7.2.1511-v1.0.0.box",
-          "checksum_type": "sha256",
-          "checksum": "..............................."
-        }
-      ]
-    }, {
-      "version": "2.0.0",
-      "status": "active",
-      "providers": [
-        {
-          "name": "virtualbox",
-          "url": "/path/to/artifacts/CentOS-7.2.1511-v2.0.0.box",
-          "checksum_type": "sha256",
-          "checksum": "..............................."
-        }
-      ]
-    }
-  ]
-}
-
-```
+Virtualbox images are create to be used as Vagrant boxes. A catalog metadata file can be used for each OS to manage Vagrant images. These files are located in `artifacts/`. An example can be found in `artifacts/CentOS-7.2.1511.json.example`.  Referencing a catalog in a `Vagrantfile` will automatically import the last image or prompt for an upgrade if a newer version is found based on the data in the catalog. For example:
 
 ``` ruby
 # Vagrantfile
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "mynamespace/CentOS-7.2.1511"
+  config.vm.box = "namespace/CentOS-7.2.1511"
   config.vm.box_url = 'file://path/to/artifacts/CentOS-7.2.1511.json'
 end
 ```
@@ -315,7 +281,7 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 |   |           |-- CentOS-7.2.1511-0.0.0_aws.ova   Template specific artifact
 |   |           |-- CentOS-7.2.1511-0.0.0_aws.box   Vagrant box for debugging purposes
 |   |           `-- ...                             Other files might be generated. Artifacts are not kept in VC
-|   `-- CentOS-7.2.1511.json                      Vagrant boxes catalog metadata (one per OS)
+|   `-- CentOS-7.2.1511.json.example              Exampe for vagrant boxes catalog metadata (one per OS)
 |-- http/                                         HTTP server directory for Packer and metal PXE
 |   |-- ks.php                                    Kickstart entry point
 |   |-- includes/                                 Kickstart include files
@@ -371,3 +337,4 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 - Move vm_name out of OS templates?
 - Add other options, ie locale, root pass, ...
 - Move files with options to example files
+- Automate vagrant boxes catalog metadata files in artifacts

@@ -4,6 +4,7 @@ TAGS
 *.retry
 
 /packer_cache
+/artifacts/*.json
 /artifacts/**/*.box
 /artifacts/**/*.nvram
 /artifacts/**/*.ova
