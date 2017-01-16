@@ -1,0 +1,7 @@
+{
+  "namespace": "mysitename",
+  "version": "0.0.0",
+  "headless": "true",
+  "iso_server": "http://my.server.com/path/to/http/dir",
+  "ks_server": "http://my.server.com/path/to/http/dir"
+}

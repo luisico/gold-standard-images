@@ -19,3 +19,4 @@ TAGS
 /keys/*
 /http/isos/**/*.iso
 /README.html
+/templates/site.json

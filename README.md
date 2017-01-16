@@ -24,7 +24,7 @@ The system depends on four inputs, which are well known and maintained:
 - CentOS 7.2.1511
 - RedHat 7.2
 
-Note that OS name and versions are named after the value reported by `ansible_distribution` and `ansible_distribution_version`.
+Note that OS name and versions are named after the values reported by `ansible_distribution` and `ansible_distribution_version`.
 
 ## Providers
 
@@ -39,32 +39,26 @@ This is the list of supported providers and their build name (and build type):
 
 # Building artifacts
 
-First select the VM to produce. Supported operating system are:
+First select the VM to produce, ie:
 ``` sh
-vm_name=CentOS-7.2.1511
+vm_name=CentOS-7.2.1511      # or
 vm_name=RedHat-7.2
 ```
-
-Then select the version to generate:
+Then, run Packer in parallel to generate the all artifacts. Note that due to an incompatibility between Virtualbox and KVM running concurrently, builds need to be split:
 ``` sh
-version=0.0.0
+packer build -var-file=templates/site.json -var-file=templates/${vm_name}.json $opts --only=virtualbox,aws templates/main.json
+packer build -var-file=templates/site.json -var-file=templates/${vm_name}.json $opts --except=virtualbox,aws templates/main.json
 ```
 
-Other variables used by Packer can be specified at this point using Packer's `-var` syntax. See `template/main.json` for a complete list. For example:
+Variables used by Packer templates are set in `templates/site.json` and the the OS specific templates found in `templates`. They can also be overriden in the command line using the `-var` option. A complete list of variables can be found at the top of `template/main.json`. For example:
 ``` sh
--var namespace=my_namespace
+-var version=0.0.0
 ```
 
-Other useful options include:
+The following options might also be useful:
 ``` sh
 opts="-var headless=false"        # helps debugging kickstarts
 opts="-force"                     # forces overwriting of artifacts
-```
-
-Run Packer in parallel to generate the all artifacts. Due to an incompatibility between Virtualbox and KVM running concurrently, builds need to be split:
-``` sh
-packer build $opts -var-file=templates/${vm_name}.json -var version=${version} --only=virtualbox,aws templates/main.json
-packer build $opts -var-file=templates/${vm_name}.json -var version=${version} --except=virtualbox,aws templates/main.json
 ```
 
 Note that, although Packer allows automated upload of images to cloud providers, this is not activated at the moment. See below for instructions on uploading/importing to the different providers:
@@ -360,7 +354,8 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 |   |-- cleanup.sh                                Cleanup boxes
 |   `-- zero.sh                                   Compress boxes
 |-- templates/                                    Packer templates
-|   |-- main.json                                 Parallel template
+|   |-- main.json                                 Parallel template with all builds
+|   |-- site.json                                 Site specific variables
 |   `-- CentOS-7.2.1511.json                      OS specific variables
 |-- test/                                         Vagrant tests
 |   `-- Vagrantfile
