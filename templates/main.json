@@ -278,8 +278,8 @@
     },
     {
       "type": "shell-local",
-      "keep_input_artifact": true,
       "only": ["azure"],
+      "keep_input_artifact": true,
       "environment_vars": [
         "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
         "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
@@ -288,8 +288,8 @@
     },
     {
       "type": "shell-local",
-      "keep_input_artifact": true,
       "only": ["gcp"],
+      "keep_input_artifact": true,
       "environment_vars": [
         "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
         "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
@@ -301,8 +301,8 @@
     },
     {
       "type": "shell-local",
-      "keep_input_artifact": true,
       "only": ["docker"],
+      "keep_input_artifact": true,
       "environment_vars": [
         "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
         "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
@@ -311,8 +311,8 @@
     },
     {
       "type": "shell-local",
-      "keep_input_artifact": true,
       "only": ["vmware"],
+      "keep_input_artifact": true,
       "environment_vars": [
         "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
         "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
