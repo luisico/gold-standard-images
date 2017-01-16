@@ -3,5 +3,6 @@
   "os_name": "RedHat",
   "os_version": "7.2",
   "iso": "rhel-server-7.2-x86_64-boot",
-  "iso_checksum": "6d32b368055c826b13ad9e259105c6f2d973ef98bd4c85e025edcd4a43cc7fc6"
+  "iso_checksum": "6d32b368055c826b13ad9e259105c6f2d973ef98bd4c85e025edcd4a43cc7fc6",
+  "repo_server": "http://epm.ebi.ac.uk/epm/baselines/rh7-network"
 }

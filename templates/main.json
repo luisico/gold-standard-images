@@ -263,7 +263,14 @@
       "playbook_file": "ansible/site.yml",
       "sftp_command": "/usr/libexec/openssh/sftp-server -e",
       "user": "root",
-      "extra_arguments": [ "-v", "-e build={{build_name}}" ]
+      "extra_arguments": [
+        "-v",
+        "-e packer_build_name={{build_name}}",
+        "-e packer_namespace={{user `namespace`}}",
+        "-e packer_version={{user `version`}}",
+        "-e packer_iso_server={{user `iso_server`}}",
+        "-e packer_ks_server={{user `ks_server`}}"
+      ]
     },
     {
       "type": "shell",

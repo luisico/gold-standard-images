@@ -252,6 +252,8 @@ The customized kickstart also understands the following options:
 
 Each builder will provision the image by running Ansbile playbook `ansible/site.yml`, which in turns runs base tasks from `ansible/base.yml` (common to all builders), and then builder specific tasks based on the build name, ie `ansible/aws.yml`.
 
+Packer site and OS specific variables are available to Ansible tasks. Site variables (see `templates/site.json`) are passed as Ansible command line variables and prefixed with `packer_` (ie `packer_namespace`). These variables are also reflected in Ansible if overrided as Packer's command line options. OS specific variables in `templates` are imported into object `packer_os` at the start of the main playbook (ie `packer_os.repo_server`) and are not reflected in Ansible if overriden as Packer's command line options.
+
 The structure of these playbooks might not conform to best practices due to the specificity of this projects. In particular, tasks are used directly instead of roles. Tasks (as well as templates and files) are shared among all playbooks to better maintain consistency among generated artifacts. Note that idempotency is not key when running Ansible in this project because a playbook is only run once.
 
 ## Cleanup shell scripts
