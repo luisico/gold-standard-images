@@ -21,3 +21,4 @@ TAGS
 /http/isos/**/*.iso
 /README.html
 /templates/site.json
+/templates/os/*.json

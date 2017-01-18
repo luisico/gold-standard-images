@@ -205,7 +205,7 @@ A standard Packer's JSON template for parallel generation of artifacts for diffe
 
 The main template declares a set of variables (`user variables` as per Packer). These variables are unset in the main template and instead should be set in the appropiate template (see below). Note that failure to set all variables declared with `null` in the main template will prevent the build process. Variables can also be overriden in command line (see above). Variables are divided into two types:
 - Site specific variables (ie `namespace`, `vm_name`, `version` and http servers). These should be set in `templates/site.json`.
-- OS specific variables (ie `os_name`, `os_version`, `iso` and `iso_checksum`). These should be set in the OS specific template under `templates/os` (ie `templates/os/CentOS-7.2.1511.json`).
+- OS specific variables (ie `os_name`, `os_version`, `iso` and `iso_checksum`). These should be set in the OS specific template under `templates/os`. An example template can be found in `templates/os/CentOS-7.2.1511.json.example`.
 
 This setup provides flexibility in the image building process and allows site and os selection.
 
