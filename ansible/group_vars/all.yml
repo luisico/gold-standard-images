@@ -4,25 +4,25 @@ repos:
     7.2.1511:
       - name: base
         file: CentOS-Base
-        baseurl: '{{packer_os.repo_server}}/7.2.1511/os/$basearch'
+        baseurl: '{{packer_os.repo_server}}/{{ansible_distribution_version}}/os/$basearch'
         gpgcheck: 1
         gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7'
         enabled: 1
       - name: updates
         file: CentOS-Base
-        baseurl: '{{packer_os.repo_server}}/7.2.1511/updates/$basearch'
+        baseurl: '{{packer_os.repo_server}}/{{ansible_distribution_version}}/updates/$basearch'
         gpgcheck: 1
         gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7'
         enabled: 0
       - name: extras
         file: CentOS-Base
-        baseurl: '{{packer_os.repo_server}}/7.2.1511/extras/$basearch'
+        baseurl: '{{packer_os.repo_server}}/{{ansible_distribution_version}}/extras/$basearch'
         gpgcheck: 1
         gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7'
         enabled: 0
       - name: centosplus
         file: CentOS-Base
-        baseurl: '{{packer_os.repo_server}}/7.2.1511/centosplus/$basearch'
+        baseurl: '{{packer_os.repo_server}}/{{ansible_distribution_version}}/centosplus/$basearch'
         gpgcheck: 1
         gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7'
         enabled: 0

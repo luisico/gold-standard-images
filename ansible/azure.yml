@@ -36,8 +36,7 @@
   when: dracut.changed
 
 - name: Add repository for Azure agent
-  yum_repository: name=openlogic description="Openlogic's Azure agent'" baseurl=http://olcentgbl.trafficmanager.net/openlogic/7.2.1511/openlogic/x86_64/ gpgcheck=yes gpgkey=http://olcentgbl.trafficmanager.net/openlogic/7.2.1511/openlogic/x86_64/OpenLogic-GPG-KEY enabled=no state=present owner=root group=root mode=0644
-  # http://olcentgbl.trafficmanager.net/openlogic/7.2.1511/openlogic/x86_64/OpenLogic-GPG-KEY
+  yum_repository: name=openlogic description="Openlogic's Azure agent'" baseurl=http://olcentgbl.trafficmanager.net/openlogic/{{ansible_distribution_version}}/openlogic/x86_64/ gpgcheck=yes gpgkey=http://olcentgbl.trafficmanager.net/openlogic/{{ansible_distribution_version}}/openlogic/x86_64/OpenLogic-GPG-KEY enabled=no state=present owner=root group=root mode=0644
 
 - name: Install Azure agent and dependencies
   yum: name={{item}} state=present enablerepo=openlogic
