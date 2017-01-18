@@ -82,7 +82,7 @@ build=aws
 artdir=artifacts/${version}/${vm_name}/${build}
 artifact=${vm_name}-${version}_${build}
 
-aws_s3_bucket=mys3bucket
+aws_s3_bucket=myawsbucket
 
 cp $artdir/$artifact.ova s3://${aws_s3_bucket}/
 aws ec2 import-image --disk-container "Format=ova,UserBucket={S3Bucket=${aws_s3_bucket},S3Key=$artifact.ova}"
@@ -109,7 +109,7 @@ Install and configure [CLOUD SDK](https://cloud.google.com/sdk) by following the
 
 #### Upload
 
-The following instructions assume  CLOUD SDK is installed and configured to access your GCP account. In particular, the `gsutil` and `gcloud` tools need to be available. In addition a GCP bucket for upload of the image before importing must already be available.
+The following instructions assume CLOUD SDK is installed and configured to access your GCP account. In particular, the `gsutil` and `gcloud` tools need to be available. In addition a GCP bucket for upload of the image before importing must already be available.
 
 ``` sh
 build=gcp
@@ -170,7 +170,7 @@ openstack image create --disk-format qcow2 --file $artdir/$artifact.qcow2 --tag 
 
 ### VirtualBox
 
-Virtualbox images are create to be used as Vagrant boxes. A catalog metadata file can be used for each OS to manage Vagrant images. These files are located in `artifacts/`. An example can be found in `artifacts/CentOS-7.2.1511.json.example`.  Referencing a catalog in a `Vagrantfile` will automatically import the last image or prompt for an upgrade if a newer version is found based on the data in the catalog. For example:
+Virtualbox images are create to be used as Vagrant boxes. A catalog metadata file can be used for each OS to manage Vagrant images. These files are located in `artifacts/`. An example can be found in `artifacts/CentOS-7.2.1511.json.example`. Referencing a catalog in a `Vagrantfile` will automatically import the last image or prompt for an upgrade if a newer version is found based on the data in the catalog. For example:
 
 ``` ruby
 # Vagrantfile
@@ -187,7 +187,7 @@ To build VMware images VMware Player or VMware Workstation is needed. See [build
 
 #### Upload
 
-To upload the artifact, first login to your VMware account and  manually upload the OVA image at `$artdir/$artifact.ova`.
+To upload the artifact, login to your VMware account and manually upload the OVA image at `$artdir/$artifact.ova`.
 
 ``` sh
 build=vmware
