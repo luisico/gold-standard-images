@@ -1,10 +1,10 @@
 # Define directories
-MAINDIR = Pathname.new("#{ENV['HOME']}/provision/boxes")
+MAINDIR = Pathname.new("../").realpath
 ARTIFACTSDIR = MAINDIR + 'artifacts'
 KEYSDIR = MAINDIR + 'keys'
 
 # For vagrant servers (currently not working with local paths)
-# ENV['VAGRANT_SERVER_URL'] = 'file://~/provision/boxes/artifacts'
+# ENV['VAGRANT_SERVER_URL'] = 'file://' + ARTIFACTSDIR
 
 # Default is latest RedHat 7.2 for virtualbox
 default = {
