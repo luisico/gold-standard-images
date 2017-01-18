@@ -34,4 +34,7 @@ if ($_GET['os']) {
 if ($fqdn) {
   list($hostname, $domain) = explode('.', $fqdn, 2);
 }
+
+// Read packer variables
+include "builds/packer/vars.php";
 ?>

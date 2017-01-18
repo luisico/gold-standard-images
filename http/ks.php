@@ -2,7 +2,7 @@
 install
 cmdline
 
-<?php include "includes/repos/${os_name}.php"; ?>
+<?php include "includes/repo.php"; ?>
 
 lang en_GB.UTF-8
 keyboard uk

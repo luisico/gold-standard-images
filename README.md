@@ -46,11 +46,11 @@ vm_name=RedHat-7.2
 ```
 Then, run Packer in parallel to generate the all artifacts. Note that due to an incompatibility between Virtualbox and KVM running concurrently, builds need to be split:
 ``` sh
-packer build -var-file=templates/site.json -var-file=templates/${vm_name}.json $opts --only=virtualbox,aws templates/main.json
-packer build -var-file=templates/site.json -var-file=templates/${vm_name}.json $opts --except=virtualbox,aws templates/main.json
+packer build -var-file=templates/site.json -var-file=templates/os/${vm_name}.json $opts --only=virtualbox,aws templates/main.json
+packer build -var-file=templates/site.json -var-file=templates/os/${vm_name}.json $opts --except=virtualbox,aws templates/main.json
 ```
 
-Variables used by Packer templates are set in `templates/site.json` and the the OS specific templates found in `templates`. They can also be overriden in the command line using the `-var` option. A complete list of variables can be found at the top of `template/main.json`. For example:
+Variables used by Packer templates are set in `templates/site.json` and the the OS specific templates found in directory `templates/os`. They can also be overriden in the command line using the `-var` option. A complete list of variables can be found at the top of `templates/main.json`. For example:
 ``` sh
 -var version=0.0.0
 ```
@@ -201,16 +201,13 @@ The build of an artifact for use in a cloud environment start with a Packer's te
 
 ## Packer.io templates
 
-A standard Packer's JSON template for parallel generation of artifacts for different cloud providers is located in the `templates/main.json` alongside with OS specific templates (ie `CentOS-7-x86_64-Minimal-1511.json`).
+A standard Packer's JSON template for parallel generation of artifacts for different cloud providers is located in the `templates/main.json` alongside with a site specific template in `templates/site.json` and OS specific templates in directory `templates/os` (ie `CentOS-7.2.1511.json`).
 
-This standard template declares a set of variables (`user variables` as per Packer), which can generally be divided in three types:
-- Artifact specific variables (ie `namespace`, `vm_name` and `version`).
-- OS specific variables (ie `os_name`, `os_version`, `iso` and `iso_checksum`). These are unset in the templates and instead should be defined for each supported OS in a OS specific template (ie `CentOS-7-x86_64-Minimal-1511.json`). These might not be declared if the template depends on another template's artifacts.
-- Specific template variables needed by the builders and post-processors (these have a prefix corresponding to the builder name).
+The main template declares a set of variables (`user variables` as per Packer). These variables are unset in the main template and instead should be set in the appropiate template (see below). Note that failure to set all variables declared with `null` in the main template will prevent the build process. Variables can also be overriden in command line (see above). Variables are divided into two types:
+- Site specific variables (ie `namespace`, `vm_name`, `version` and http servers). These should be set in `templates/site.json`.
+- OS specific variables (ie `os_name`, `os_version`, `iso` and `iso_checksum`). These should be set in the OS specific template under `templates/os` (ie `templates/os/CentOS-7.2.1511.json`).
 
-Default values are provider either on the template itself or on the OS specific template. Those variables with a default value of `null` will need to get their value from the OS specific template or the command line. Variables defined in the OS specific template will always override values from the template, and variables defined in the command line will override any other value.
-
-This setup provides flexibility in image building process, like separating building process from OS, and allowing for versioning of artifacts.
+This setup provides flexibility in the image building process and allows site and os selection.
 
 The main templates will bootstrap artifacts for multiple providers, usually providing an additional VirtualBox artifact for development/testing purposes.
 
@@ -238,7 +235,21 @@ TODO
 
 ## Kickstarts
 
-Kickstart files are located in the `http/` directory. The main kickstart file is `ks.php`, and requires a server running php. On a local computer the easiest is to install apache and symlink this directory to `~/public_html`. The kickstart system is divided in multiple files that get included depending on the variables defined the build type and build files for the specified server (found in `builds/`). All Packer templates will use definitions found in `builds/virtual` while bare metal servers will look for definition files in `build/metal`. Different kickstart sections get included for metal or virtual builds appropriately. URLs to target different servers are in the form of `http://server.domain:port/ks.php?build=buildtype/build`, where `buildtype` is `virtual` or `metal` and `build` is a specific build or host. If buildtype is not defined, `virtual` is used.
+Kickstart files are located in the `http/` directory. The main kickstart file is `ks.php`, and requires a server running php. On a local computer the easiest is to install apache and symlink this directory to `~/public_html`.
+
+### Packer variables
+
+Packer site variables variables defined in `templates/site.json` and OS variables defined in `templates/os` are available in the kickstart in php objects `packer_site` and `packer_os`. Note that variables defined in the command line while running packer are not reflected here. Currently only `packer_os['os_version']` is used (see below).
+
+### Build types
+
+The kickstart system is divided in multiple files that get included depending on the variables defined the build type and build files for the specified server (found in `builds/`). All Packer templates will use definitions found in `builds/virtual` while bare metal servers will look for definition files in `build/metal`. Different kickstart sections get included for metal or virtual builds appropriately. URLs to target different servers are in the form of `http://server.domain:port/ks.php?build=buildtype/build`, where `buildtype` is `virtual` or `metal` and `build` is a specific build or host (with default values if `build` is not found). If buildtype is not defined, `virtual` is used.
+
+### OS
+
+Multiple OS (and OS version) are supported by passing `os=name-version` to the server, ie `http://server.domain:port/ks.php?os=CentOS-7.2.1511`. Currently this is only used to pass the OS version to the repositories in `packer_os['os_version']`. All Packer templates pass this information.
+
+The URL for the repository is picked up from the packer template variables (see above).
 
 ### First boot options
 
@@ -252,7 +263,7 @@ The customized kickstart also understands the following options:
 
 Each builder will provision the image by running Ansbile playbook `ansible/site.yml`, which in turns runs base tasks from `ansible/base.yml` (common to all builders), and then builder specific tasks based on the build name, ie `ansible/aws.yml`.
 
-Packer site and OS specific variables are available to Ansible tasks. Site variables (see `templates/site.json`) are passed as Ansible command line variables and prefixed with `packer_` (ie `packer_namespace`). These variables are also reflected in Ansible if overrided as Packer's command line options. OS specific variables in `templates` are imported into object `packer_os` at the start of the main playbook (ie `packer_os.repo_server`) and are not reflected in Ansible if overriden as Packer's command line options.
+Packer site and OS specific variables are available to Ansible tasks. Site variables (see `templates/site.json`) are passed as Ansible command line variables and prefixed with `packer_` (ie `packer_namespace`). These variables are also reflected in Ansible if overrided as Packer's command line options. OS specific variables in `templates/os` are imported into object `packer_os` at the start of the main playbook (ie `packer_os.repo_server`) and are not reflected in Ansible if overriden as Packer's command line options.
 
 The structure of these playbooks might not conform to best practices due to the specificity of this projects. In particular, tasks are used directly instead of roles. Tasks (as well as templates and files) are shared among all playbooks to better maintain consistency among generated artifacts. Note that idempotency is not key when running Ansible in this project because a playbook is only run once.
 
@@ -288,27 +299,30 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 |-- http/                                         HTTP server directory for Packer and metal PXE
 |   |-- ks.php                                    Kickstart entry point
 |   |-- includes/                                 Kickstart include files
-|   |   |-- header.php
+|   |   |-- header.php                            Parse incoming URL and set settings
+|   |   |-- repo.php                              Repositoy URLs for OSs
 |   |   |-- metal/                                Metal specific Kickstart settings
 |   |   |   |-- disk.php
 |   |   |   |-- network.php
 |   |   |   |-- post.php
 |   |   |   `-- rootpw.php
-|   |   |-- packer/                               Packer specific Kickstart settings
+|   |   |-- virtual/                              VMs specific Kickstart settings
 |   |   |   |-- disk.php
 |   |   |   |-- network.php
 |   |   |   |-- post.php
 |   |   |   `-- rootpw.php
-|   |   `-- repos/                                Repositoy URLs for OSs
-|   |       `-- CentOS.php
 |   |-- builds/                                   Per build type definitions
 |   |   |-- defaults.php                          Common defaults for all builds
-|   |   |-- virtual
+|   |   |-- virtual/
 |   |   |   |-- defaults.php                      Default options for virtual builds
 |   |   |   `-- aws.php                           Options for specific builds
-|   |   `-- metal
-|   |       |-- defaults.php                      Default options for metal hosts
-|   |       `-- {host1,...}.php                   Options for specific hosts
+|   |   |-- metal/
+|   |   |   |-- defaults.php                      Default options for metal hosts
+|   |   |   `-- {host1,...}.php                   Options for specific hosts
+|   |   `-- packer/
+|   |       |-- vars.php                          Read packer variables
+|   |       |-- site.json ->                      Link to packer's templates/site.json
+|   |       `-- templates/os/ ->                  Link to packer's templates/os
 |   `-- isos/                                     Locally downloaded isos
 |       `-- CentOS/                                 Ordered by OS
 |         `-- 7.2.1511/                             and version
@@ -325,7 +339,8 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 |-- templates/                                    Packer templates
 |   |-- main.json                                 Parallel template with all builds
 |   |-- site.json                                 Site specific variables
-|   `-- CentOS-7.2.1511.json                      OS specific variables
+|   `-- os/                                       OS specific variables
+|       `-- CentOS-7.2.1511.json.example          Example of OS specific template
 |-- test/                                         Vagrant tests
 |   `-- Vagrantfile
 `-- .gitignore                                    Files to ignore in VC

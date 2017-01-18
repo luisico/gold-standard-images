@@ -3,7 +3,7 @@
   hosts: all
   tasks:
     # Load variables from OS packer templates (variables overriden in command line will not be picked up)
-    - include_vars: name=packer_os file=../templates/{{ansible_distribution}}-{{ansible_distribution_version}}.json depth=no
+    - include_vars: name=packer_os file=../templates/os/{{ansible_distribution}}-{{ansible_distribution_version}}.json depth=no
 
     # Common tasks to all builds
     - include: tasks/repos.yml
