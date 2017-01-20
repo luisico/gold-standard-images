@@ -61,7 +61,9 @@ opts="-var headless=false"        # helps debugging kickstarts
 opts="-force"                     # forces overwriting of artifacts
 ```
 
-Note that, although Packer allows automated upload of images to cloud providers, this is not activated at the moment. See below for instructions on uploading/importing to the different providers:
+SHA256 checksums generated for all artifacts can be found in the artifacts directory for each provider.
+
+Note that, although Packer allows automated upload of images to cloud providers, this is not activated at the moment. See below for instructions on uploading/importing to the different providers.
 
 ## Providers
 
@@ -292,6 +294,7 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 |   |-- 0.0.0/                                    Ordered by version
 |   |   `-- CentOS-7.2.1511/                        and OS
 |   |       `-- aws/                                and provider
+|   |           |-- SHA256SUM                       SHA256 checksum for all artifacts
 |   |           |-- CentOS-7.2.1511-0.0.0_aws.ova   Template specific artifact
 |   |           |-- CentOS-7.2.1511-0.0.0_aws.box   Vagrant box for debugging purposes
 |   |           `-- ...                             Other files might be generated. Artifacts are not kept in VC

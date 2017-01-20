@@ -17,6 +17,8 @@ TAGS
 /artifacts/**/*.vhd
 /artifacts/**/*.tar.gz
 /artifacts/**/disk.raw
+/artifacts/**/SHA256SUM
+
 /keys/*
 /http/isos/**/*.iso
 /README.html

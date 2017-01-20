@@ -334,6 +334,17 @@
       "type": "vagrant",
       "keep_input_artifact": true,
       "output": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}/{{user `vm_name`}}-{{user `version`}}_{{build_name}}.box"
+    },
+
+    {
+      "type": "shell-local",
+      "environment_vars": [
+        "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}"
+      ],
+      "inline": [
+        "cd $OUTDIR",
+        "sha256sum * > SHA256SUM"
+      ]
     }
   ]
 }
