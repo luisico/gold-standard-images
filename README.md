@@ -314,22 +314,18 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 |   |   |   |-- network.php
 |   |   |   |-- post.php
 |   |   |   `-- rootpw.php
-|   |-- builds/                                   Per build type definitions
-|   |   |-- defaults.php                          Common defaults for all builds
-|   |   |-- virtual/
-|   |   |   |-- defaults.php                      Default options for virtual builds
-|   |   |   `-- aws.php                           Options for specific builds
-|   |   |-- metal/
-|   |   |   |-- defaults.php                      Default options for metal hosts
-|   |   |   `-- {host1,...}.php                   Options for specific hosts
-|   |   `-- packer/
-|   |       |-- vars.php                          Read packer variables
-|   |       |-- site.json ->                      Link to packer's templates/site.json
-|   |       `-- templates/os/ ->                  Link to packer's templates/os
-|   `-- isos/                                     Locally downloaded isos
-|       `-- CentOS/                                 Ordered by OS
-|         `-- 7.2.1511/                             and version
-|           `-- CentOS-7-x86_64-Minimal-1511.iso
+|   `-- builds/                                   Per build type definitions
+|       |-- defaults.php                          Common defaults for all builds
+|       |-- virtual/
+|       |   |-- defaults.php                      Default options for virtual builds
+|       |   `-- aws.php                           Options for specific builds
+|       |-- metal/
+|       |   |-- defaults.php                      Default options for metal hosts
+|       |   `-- {host1,...}.php                   Options for specific hosts
+|       `-- packer/
+|           |-- vars.php                          Read packer variables
+|           |-- site.json ->                      Link to packer's templates/site.json
+|           `-- templates/os/ ->                  Link to packer's templates/os
 |-- keys/                                         SSH keys [!VC]
 |   |-- packer
 |   |-- packer.pub
