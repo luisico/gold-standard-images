@@ -179,7 +179,7 @@ Virtualbox images are create to be used as Vagrant boxes. A catalog metadata fil
 
 Vagrant.configure(2) do |config|
   config.vm.box = "namespace/CentOS-7.2.1511"
-  config.vm.box_url = 'file://path/to/artifacts/CentOS-7.2.1511.json'
+  config.vm.box_url = 'file:///path/to/artifacts/CentOS-7.2.1511.json'
 end
 ```
 
