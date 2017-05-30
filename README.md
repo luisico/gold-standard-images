@@ -119,9 +119,10 @@ artdir=artifacts/${version}/${vm_name}/${build}
 artifact=${vm_name}-${version}_${build}
 
 gcp_bucket=mygcpbucket
+image=$(echo $artifact | tr [_.] - | tr [A-Z] [a-z])
 
 gsutil cp $artdir/$artifact.tar.gz gs://${gcp_bucket}
-gcloud compute images create $artifact --source-uri gs://${gcp_bucket}/$artifact.tar.gz
+gcloud compute images create $image --source-uri gs://${gcp_bucket}/$artifact.tar.gz
 ```
 
 ### Microsoft Azure
@@ -130,19 +131,23 @@ Follow instructions to install and configure [Azure CLI](https://docs.microsoft.
 
 #### Upload
 
-The following instructions assume Azure CLI is install and configured to access your Azure account. In addition a resource group and storage account must already be available.
+The following instructions assume Azure CLI is install and configured to access your Azure account. In addition a resource group must already be available.
 
 ``` sh
 build=azure
 artdir=artifacts/${version}/${vm_name}/${build}
 artifact=${vm_name}-${version}_${build}
 
-$resource_group=myresourcegroup
-$storage_account=mystorageaccount
+resource_group=myresourcegroup
+storage_account=mystorageaccount
+container=images-container
 
 azure config mode arm
+azure group create -l northeurope $resource_group
+azure storage account create -g $resource_group -l northeurope --kind Storage --sku-name RAGRS $storage_account
 key=$(azure storage account keys list $storage_account -g $resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
-azure storage blob upload -t page -a storage_account -k $key --container images_container -f $artdir/$artifact.vhd
+azure storage container create -a $storage_account -k $key $container
+azure storage blob upload -t page -a $storage_account -k $key --container $container -f $artdir/$artifact.vhd
 ```
 
 ### OpenStack
