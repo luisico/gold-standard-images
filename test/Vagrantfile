@@ -14,6 +14,11 @@ default = {
 }
 
 Vagrant.configure(2) do |config|
+  # Use linked clones
+  config.vm.provider "virtualbox" do |v|
+    v.linked_clone = true
+  end
+
   # Default ssh config
   config.ssh.username = 'vagrant'
   config.ssh.private_key_path = KEYSDIR + 'vagrant'
