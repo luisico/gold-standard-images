@@ -91,6 +91,31 @@ aws ec2 import-image --disk-container "Format=ova,UserBucket={S3Bucket=${aws_s3_
 aws ec2 describe-import-image-tasks
 ```
 
+### Microsoft Azure (`azure`)
+
+The `azure` provider uses the `qemu` build type (see [qemu](#qemu) for dependencies). It also depends on [qemu-img](#qemu-img) to convert the artifact into VHD format. [Azure CLI](#azure-cli) is use to upload the image.
+
+#### Upload
+
+The following instructions assume Azure CLI is install and configured to access your Azure account. In addition a resource group must already be available.
+
+``` sh
+build=azure
+artdir=artifacts/${version}/${vm_name}/${build}
+artifact=${vm_name}-${version}_${build}
+
+resource_group=myresourcegroup
+storage_account=mystorageaccount
+container=images-container
+
+azure config mode arm
+azure group create -l northeurope $resource_group
+azure storage account create -g $resource_group -l northeurope --kind Storage --sku-name RAGRS $storage_account
+key=$(azure storage account keys list $storage_account -g $resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
+azure storage container create -a $storage_account -k $key $container
+azure storage blob upload -t page -a $storage_account -k $key --container $container -f $artdir/$artifact.vhd
+```
+
 ### Docker (`docker`)
 
 The `docker` provider uses the `qemu` build type (see [qemu](#qemu) for dependencies). It also depends on [virt-tar-out](#virt-tar-out) and gzip to convert the artifact into compress tar file, and [Docker](#docker) to import the image.
@@ -123,31 +148,6 @@ image=$(echo $artifact | tr [_.] - | tr [A-Z] [a-z])
 
 gsutil cp $artdir/$artifact.tar.gz gs://${gcp_bucket}
 gcloud compute images create $image --source-uri gs://${gcp_bucket}/$artifact.tar.gz
-```
-
-### Microsoft Azure (`azure`)
-
-The `azure` provider uses the `qemu` build type (see [qemu](#qemu) for dependencies). It also depends on [qemu-img](#qemu-img) to convert the artifact into VHD format. [Azure CLI](#azure-cli) is use to upload the image.
-
-#### Upload
-
-The following instructions assume Azure CLI is install and configured to access your Azure account. In addition a resource group must already be available.
-
-``` sh
-build=azure
-artdir=artifacts/${version}/${vm_name}/${build}
-artifact=${vm_name}-${version}_${build}
-
-resource_group=myresourcegroup
-storage_account=mystorageaccount
-container=images-container
-
-azure config mode arm
-azure group create -l northeurope $resource_group
-azure storage account create -g $resource_group -l northeurope --kind Storage --sku-name RAGRS $storage_account
-key=$(azure storage account keys list $storage_account -g $resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
-azure storage container create -a $storage_account -k $key $container
-azure storage blob upload -t page -a $storage_account -k $key --container $container -f $artdir/$artifact.vhd
 ```
 
 ### OpenStack (`openstack`)
