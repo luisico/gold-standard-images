@@ -30,22 +30,21 @@ Note that OS name and versions are named after the values reported by `ansible_d
 ## Providers
 
 This is the list of supported providers by build name (Packer's build type in parenthesis):
-- `aws`: [Amazon Web Services](#amazon-web-services) (`virtualbox-iso`)
-- `azure`: [Microsoft Azure](#microsoft-azure) (`qemu`)
-- `docker`: [Docker](#docker) (`qemu`)
-- `gcp`: [Google Cloud Platform](#google-cloud-platform) (`qemu`)
-- `openstack`: [OpenStack](#openstack) (`qemu`)
-- `virtualbox`: [Virtualbox](#virtualbox) (`virtualbox-iso`)
-- `vmware`: [VMware](#vmware) (`vmware-iso`)
+- `aws`: [Amazon Web Services](#amazon-web-services-aws-) (`virtualbox-iso`)
+- `azure`: [Microsoft Azure](#microsoft-azure-azure-) (`qemu`)
+- `docker`: [Docker](#docker-docker-) (`qemu`)
+- `gcp`: [Google Compute Platform](#google-compute-platform-gcp-) (`qemu`)
+- `openstack`: [OpenStack](#openstack-openstack-) (`qemu`)
+- `virtualbox`: [VirtualBox](#virtualbox-virtualbox-) (`virtualbox-iso`)
+- `vmware`: [VMware](#vmware-vmware-) (`vmware-iso`)
 
 # Building artifacts
 
 First select the VM to produce, ie:
 ``` sh
-vm_name=CentOS-7.2.1511      # or
-vm_name=RedHat-7.2
+vm_name=CentOS-7.2.1511
 ```
-Then, run Packer in parallel to generate the all artifacts. Note that due to an incompatibility between Virtualbox and KVM running concurrently, builds need to be split:
+Then, run Packer in parallel to generate the artifacts. Note that due to an incompatibility between VirtualBox and KVM running concurrently, builds need to be split:
 ``` sh
 packer build -var-file=templates/site.json -var-file=templates/os/${vm_name}.json $opts --only=virtualbox,aws templates/main.json
 packer build -var-file=templates/site.json -var-file=templates/os/${vm_name}.json $opts --except=virtualbox,aws templates/main.json
@@ -62,7 +61,7 @@ opts="-var headless=false"        # helps debugging kickstarts
 opts="-force"                     # forces overwriting of artifacts
 ```
 
-SHA256 checksums generated for all artifacts can be found in the artifacts directory for each provider.
+SHA256 checksums generated for all artifacts can be found in the artifacts directory for each provider (see [sha256sum](#sha256sum)).
 
 Note that, although Packer allows automated upload of images to cloud providers, this is not activated at the moment. See below for instructions on uploading/importing to the different providers.
 
@@ -72,9 +71,9 @@ In this section has specific instructions for the supported providers.
 
 Note that in the upload/import subsections, an effort has been made to simplify the commands used by abstracting some of the variables used in all providers, ie `build`, `artdir` and `artifact`. In the future this will evolve into a shell utility to aid building/uploading/importing images.
 
-### Amazon Web Services
+### Amazon Web Services (`aws`)
 
-Instructions to install and configure [AWS CLI](https://aws.amazon.com/cli/) can be found [here]((http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html)). Some Linux distributions have packages available.
+The `aws` provider uses the `virtualbox-iso` build type (see [virtualbox-iso](#virtualbox-iso) for dependencies). It also depends on [AWS CLI](#aws-cli) to manage uploads.
 
 #### Upload
 
@@ -92,9 +91,9 @@ aws ec2 import-image --disk-container "Format=ova,UserBucket={S3Bucket=${aws_s3_
 aws ec2 describe-import-image-tasks
 ```
 
-### Docker
+### Docker (`docker`)
 
-Instructions to install [Docker](https://www.docker.com) can be found [here](https://docs.docker.com/engine/installation). The builder requires `virt-tar-out` to convert the artifact into the tar file (see [build dependencies](#) for details).
+The `docker` provider uses the `qemu` build type (see [qemu](#qemu) for dependencies). It also depends on [virt-tar-out](#virt-tar-out) and gzip to convert the artifact into compress tar file, and [Docker](#docker) to import the image.
 
 #### Import
 
@@ -106,9 +105,9 @@ artifact=${vm_name}-${version}_${build}
 docker import $artdir/$artifact.tar.gz $artifact
 ```
 
-### Google Compute Platform
+### Google Compute Platform (`gcp`)
 
-Install and configure [CLOUD SDK](https://cloud.google.com/sdk) by following the instructions in that link.
+The `gcp` provider uses the `qemu` build type (see [qemu](#qemu) for dependencies). It also depends on [qemu-img](#qemu-img) and tar to convert the artifact into compressed tar file. [Cloud SDK](#cloud-sdk) is use to upload the image.
 
 #### Upload
 
@@ -126,9 +125,9 @@ gsutil cp $artdir/$artifact.tar.gz gs://${gcp_bucket}
 gcloud compute images create $image --source-uri gs://${gcp_bucket}/$artifact.tar.gz
 ```
 
-### Microsoft Azure
+### Microsoft Azure (`azure`)
 
-Follow instructions to install and configure [Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-install)).
+The `azure` provider uses the `qemu` build type (see [qemu](#qemu) for dependencies). It also depends on [qemu-img](#qemu-img) to convert the artifact into VHD format. [Azure CLI](#azure-cli) is use to upload the image.
 
 #### Upload
 
@@ -151,19 +150,9 @@ azure storage container create -a $storage_account -k $key $container
 azure storage blob upload -t page -a $storage_account -k $key --container $container -f $artdir/$artifact.vhd
 ```
 
-### OpenStack
+### OpenStack (`openstack`)
 
-To manage an OpenStack cloud from command line requires the [OpenStack command-line](http://docs.openstack.org/user-guide/common/cli-install-openstack-command-line-clients.html) client. Instructions to install and use the client can be found in its webpage. Briefly, being a python tool it is best to install it in a virtualenv:
-``` sh
-virtualenv ~/python-openstack
-. ~/python-openstack/bin/activate
-pip install python-openstackclient
-```
-
-We also need to configure our system to access the OpenStack cloud. The easiest route is to set environment variables using the OpenStack RC file. Download this file from your cloud at `Access & Security > API Access > Download OpenStack RC file` and save locally. Source it before issuing OpenStack client commands and enter your password:
-``` sh
-. openstack.rc
-```
+The `openstack` provider uses the `qemu` build type (see [qemu](#qemu) for dependencies). It also depends on the [OpenStack command-line](http://docs.openstack.org/user-guide/common/cli-install-openstack-command-line-clients.html) to manage an OpenStack cloud, which requires [Openstackclient Python Libraries](#openstackclient-python-libraries) (see below).
 
 #### Upload
 
@@ -176,9 +165,9 @@ artifact=${vm_name}-${version}_${build}
 openstack image create --disk-format qcow2 --file $artdir/$artifact.qcow2 --tag packer --protected --public $artifact
 ```
 
-### VirtualBox
+### VirtualBox (`virtualbox`)
 
-Virtualbox images are create to be used as Vagrant boxes. A catalog metadata file can be used for each OS to manage Vagrant images. These files are located in `artifacts/`. An example can be found in `artifacts/CentOS-7.2.1511.json.example`. Referencing a catalog in a `Vagrantfile` will automatically import the last image or prompt for an upgrade if a newer version is found based on the data in the catalog. For example:
+The `virtualbox` provider uses the `virtualbox-iso` build type (see [virtualbox-iso](#virtualbox-iso) for dependencies). VirtualBox images are create to be used as Vagrant boxes (see [Vagrant](#vagrant)). A catalog metadata file can be used for each OS to manage Vagrant images. These files are located in `artifacts/`. An example can be found in `artifacts/CentOS-7.2.1511.json.example`. Referencing a catalog in a `Vagrantfile` will automatically import the last image or prompt for an upgrade if a newer version is found based on the data in the catalog. For example:
 
 ``` ruby
 # Vagrantfile
@@ -189,9 +178,9 @@ Vagrant.configure(2) do |config|
 end
 ```
 
-### VMware
+### VMware (`vmware`)
 
-To build VMware images VMware Player or VMware Workstation is needed. See [build dependencies](#vmware-iso) for details. Additionally, the resulting artifacts gets converted to OVA format with `ovftool` (see [build dependencies](#ovftool) for details) as part of the build.
+The `vmware` provider uses the `vmware` build type (see [vmware-iso](#vmware-iso) for dependencies). It also depends on [ovftool](#ovftool) to convert the artifact to OVA format.
 
 #### Upload
 
@@ -207,7 +196,7 @@ artifact=${vm_name}-${version}_${build}
 
 The build of an artifact for use in a cloud environment start with a Packer's template, which in turn will first use a kickstart to bootstrap the machine and then provision if with Ansible playbooks and shell scripts. The end result will produce an artifact that can be deployed to the target cloud environment.
 
-## Packer.io templates
+## Packer templates
 
 A standard Packer's JSON template for parallel generation of artifacts for different cloud providers is located in the `templates/main.json` alongside with a site specific template in `templates/site.json` and OS specific templates in directory `templates/os` (ie `CentOS-7.2.1511.json`).
 
@@ -219,27 +208,10 @@ This setup provides flexibility in the image building process and allows site an
 
 The main templates will bootstrap artifacts for multiple providers, usually providing an additional VirtualBox artifact for development/testing purposes.
 
-### Build dependencies
-
-## virtualbox-iso
-
-TODO
-
-## qemu
-
-TODO
-
-## vmware-iso
-
-TODO
-
-### ovftool
-
-TODO
-
-### virt-tar-out
-
-TODO
+As any other Packer template, `templates/main.json` is divided in:
+- builders: on builder per provider, each declaring how to build the provider. All depend on a local HTTP server to access the kickstart files (see [Kickstarts](#kickstarts)).
+- provisioners: all execute two provisioners, the first one using Ansible to provision the image (see [Ansible playbooks](#ansible-playbooks)), and another calling two shell scripts to clean up the image (see [Cleanup shell scripts](#cleanup-shell-scripts)).
+- post-processors: some providers need post-processors to convert artifacts to the appropiate format. See [Post-processors](#post-processors) for a list of the dependencies required.
 
 ## Kickstarts
 
@@ -350,6 +322,92 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 |   `-- Vagrantfile
 `-- .gitignore                                    Files to ignore in VC
 ```
+
+### Dependencies
+
+## General
+
+The following tools make the base of the build system.
+
+### Packer
+
+[Packer](https://www.packer.io) is the main tool and is used to manage the build process. Find more information and download links their website.
+
+### Ansible
+
+[Ansible](https://www.ansible.com) is used to provision the builds in a standarized way. Most distributions have packages available for Ansible. Alternatevely you can also clone the git repository at git://github.com/ansible/ansible.git (see http://docs.ansible.com/ansible/intro_installation.html for more information).
+
+## Build types
+
+Different built types need different tools installed.
+
+### qemu
+
+These builds depend on [QEMU](http://wiki.qemu.org) and [KVM](http://www.linux-kvm.org). Most distributions have a package `qemu-kvm` available.
+
+### virtualbox-iso
+
+These builds depends on [VirtualBox](https://www.virtualbox.org). Most distributions have packages available.
+
+### vmware-iso
+
+VMware Player or [VMware Workstation](http://www.vmware.com/products/workstation-for-linux.html) is needed for builds that use the `vmware-iso` builder. Note that you might need to be registered at my.vmware.com to download the tools.
+
+## Upload/Import tools
+
+### AWS CLI
+
+Instructions to install and configure [AWS CLI](https://aws.amazon.com/cli/) can be found [here](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html). Some Linux distributions have packages available.
+
+### Azure CLI
+
+Follow instructions to install and configure [Azure CLI](https://docs.microsoft.com/en-us/azure/xplat-cli-install).
+
+### CLOUD SDK
+
+Install and configure [CLOUD SDK](https://cloud.google.com/sdk) by following the instructions in that link.
+
+### Docker
+
+Instructions to install [Docker](https://www.docker.com) can be found [here](https://docs.docker.com/engine/installation).
+
+### Openstackclient Python Libraries
+
+To manage an OpenStack cloud from command line requires the [OpenStack command-line](http://docs.openstack.org/user-guide/common/cli-install-openstack-command-line-clients.html) client. Instructions to install and use the client can be found in its webpage. Briefly, being a python tool it is best to install it in a virtualenv:
+``` sh
+virtualenv ~/python-openstack
+. ~/python-openstack/bin/activate
+pip install python-openstackclient
+```
+
+We also need to configure our system to access the OpenStack cloud. The easiest route is to set environment variables using the OpenStack RC file. Download this file from your cloud at `Access & Security > API Access > Download OpenStack RC file` and save locally. Source it before issuing OpenStack client commands and enter your password:
+``` sh
+. openstack.rc
+```
+
+### Vagrant
+
+Download Vagrant from https://www.vagrantup.com/downloads.html.
+
+## Post-processors
+
+Providers might need some post-processing to convert artifacts to the appropiate format. The following is a list of dependencies.
+
+### qemu-img
+
+qemu-img is used to convert the Packer artifacts for the `azure` and `gcp` providers into their proper format for upload. qemu-img is part of qemu and can be found in mainstream distributions as part of the qemu-utils or qemu-img packages.
+
+### ovftool
+
+The Open Virtualization Format Tool (ovftool) is used to convert the Packer artifact for `vmware` from VMX to OVA format, which is needed to upload to VMware servers. Download ovtool from https://code.vmware.com/tool/ovf/4.1.0. Note that you will need to be registered at my.vmware.com. Documentation about ovftool can be found at https://www.vmware.com/support/developer/ovf.
+
+### virt-tar-out
+
+virt-tar-out is used to produce a compress tar file from the Packer artifact for the `docker` provider. [virt-tar-out](http://libguestfs.org/virt-tar-out.1.html) is part of [libguestfs](http://libguestfs.org). Install libguestfs from our package manager or see [here](http://libguestfs.org/guestfs-faq.1.html#binaries) for further instructions.
+
+### sha256sum
+
+sha256sum is needed to generate the SHA256 checksums of all files created by Packer. Usually found in package coreutils.
 
 # TODO
 
