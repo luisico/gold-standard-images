@@ -22,6 +22,7 @@ The system depends on four inputs, which are well known and maintained:
 ## OS
 
 - CentOS 7.2.1511
+- CentOS 7.3.1611
 - RedHat 7.2
 
 Note that OS name and versions are named after the values reported by `ansible_distribution` and `ansible_distribution_version`.
