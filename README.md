@@ -40,17 +40,22 @@ This is the list of supported providers by build name (Packer's build type in pa
 
 # Building artifacts
 
-First select the VM to produce, ie:
+Read the [Bootstrapping](#bootstrapping) section below before attempting to build images for any provider.
+
+Select the VM to build, ie:
 ``` sh
 vm_name=CentOS-7.2.1511
 ```
-Then, run Packer in parallel to generate the artifacts. Note that due to an incompatibility between VirtualBox and KVM running concurrently, builds need to be split:
+
+And run Packer in parallel to generate images for all providers. Note that due to an incompatibility between VirtualBox and KVM running concurrently, builds need to be split:
 ``` sh
 packer build -var-file=templates/site.json -var-file=templates/os/${vm_name}.json $opts --only=virtualbox,aws templates/main.json
 packer build -var-file=templates/site.json -var-file=templates/os/${vm_name}.json $opts --except=virtualbox,aws templates/main.json
 ```
 
-Variables used by Packer templates are set in `templates/site.json` and the the OS specific templates found in directory `templates/os`. They can also be overriden in the command line using the `-var` option. A complete list of variables can be found at the top of `templates/main.json`. For example:
+Use Packer options `--only` and `--except` to select a set of providers to build.
+
+Variables used by Packer templates are set in `templates/site.json` and the the OS specific templates found in directory `templates/os`. They can also be overridden in the command line using the `-var` option. A complete list of variables can be found at the top of `templates/main.json`. For example:
 ``` sh
 -var version=0.0.0
 ```
@@ -200,9 +205,9 @@ The build of an artifact for use in a cloud environment start with a Packer's te
 
 A standard Packer's JSON template for parallel generation of artifacts for different cloud providers is located in the `templates/main.json` alongside with a site specific template in `templates/site.json` and OS specific templates in directory `templates/os` (ie `CentOS-7.2.1511.json`).
 
-The main template declares a set of variables (`user variables` as per Packer). These variables are unset in the main template and instead should be set in the appropiate template (see below). Note that failure to set all variables declared with `null` in the main template will prevent the build process. Variables can also be overriden in command line (see above). Variables are divided into two types:
-- Site specific variables (ie `namespace`, `vm_name`, `version` and `ks_server`). These should be set in `templates/site.json`.
-- OS specific variables (ie `os_name`, `os_version`, `iso` and `iso_checksum`, `iso_server` and `repo_server`). These should be set in the OS specific template under `templates/os`. An example template can be found in `templates/os/CentOS-7.2.1511.json.example`.
+The main template declares a set of variables (`user variables` as per Packer). These variables are unset in the main template and instead should be set in the appropriate template (see below). Note that failure to set all variables declared with `null` in the main template will prevent the build process. Variables can also be overridden in command line (see above). Variables are divided into two types:
+- Site specific variables (ie `namespace`, `vm_name`, `version` and `ks_server`). These should be set in `templates/site.json` (an example is provided in `templates/site.json.example`).
+- OS specific variables (ie `os_name`, `os_version`, `iso` and `iso_checksum`, `iso_server` and `repo_server`). These should be set in the OS specific template under `templates/os` (an example is provided in `templates/os/CentOS-7.2.1511.json.example`).
 
 This setup provides flexibility in the image building process and allows site and os selection.
 
@@ -255,7 +260,7 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 
 ## Directory Structure
 
-Note: to simplify the description, only `CentOS` is listed here where multiple OS are possible, and only `aws` is listed where multiple builder/providers are possible.
+Following is a tree of files compromising the system along with a brief description. To simplify the tree, only `CentOS` is listed here where multiple OS are possible, and only `aws` is listed where multiple builder/providers are possible. Note that items marked with `!VC` are not stored in version control (git). Also, files ending in `.example` will need to be copied into actual files as described in the relevant section in this document and those files should not be stored in version control.
 
 
 ```
@@ -305,9 +310,9 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 |           |-- site.json ->                      Link to packer's templates/site.json
 |           `-- templates/os/ ->                  Link to packer's templates/os
 |-- keys/                                         SSH keys [!VC]
-|   |-- packer
+|   |-- packer                                      For passwordless root access
 |   |-- packer.pub
-|   |-- vagrant
+|   |-- vagrant                                     For passwordless access to Vagrant boxes
 |   `-- vagrant.pub
 |-- README.md                                     Yeah, readme please!
 |-- scripts/                                      Provisioning helper scripts
@@ -323,11 +328,24 @@ Note: to simplify the description, only `CentOS` is listed here where multiple O
 `-- .gitignore                                    Files to ignore in VC
 ```
 
-### Dependencies
+
+# Bootstrapping
+
+Before attempting to build images for any provider you should bootstrap the system for your site and have a few tools ready in your system. These would depend on the providers you want to support. Each provider's section above lists the tools needed.
 
 ## General
 
-The following tools make the base of the build system.
+### Site Specifics
+
+To bootstrap your site you set up some templates (find further information in [Packer Templates](#packer-templates)):
+- Set your site variables `templates/site.json`. An example is provided in `templates/site.json.example`
+- Set your OS variables `templates/os/`. An example is provided in `templates/os/CentOS-7.2.1511.json.example`
+
+You also need to set up private keys to access the images when booted on the different providers. These keys live in `keys/` and should not be committed to version control. To create both keys use:
+``` sh
+ssh-keygen -t rsa -b 2048 -N "" -C "packer" -f keys/packer
+ssh-keygen -t rsa -b 2048 -N "" -C "vagrant" -f keys/vagrant
+```
 
 ### Packer
 
@@ -412,7 +430,6 @@ sha256sum is needed to generate the SHA256 checksums of all files created by Pac
 # TODO
 
 - User vagrant? Different users might be needed for each artifact
-- Document generation of vagrant and packer keys
 - Bigger disk size and allow to grow?
 - guest_os_type variables for vbox and VMware should go in OS template
 - Move vm_name out of OS templates?
