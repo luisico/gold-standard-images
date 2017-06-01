@@ -17,7 +17,7 @@ The system depends on four inputs, which are well known and maintained:
 - Kickstart.
 - Ansible playbooks.
 
-# Supported images
+# Supported Images
 
 ## OS
 
@@ -38,7 +38,7 @@ This is the list of supported providers by build name (Packer's build type in pa
 - `virtualbox`: [VirtualBox](#virtualbox-virtualbox-) (`virtualbox-iso`)
 - `vmware`: [VMware](#vmware-vmware-) (`vmware-iso`)
 
-# Building artifacts
+# Building Artifacts
 
 Read the [Bootstrapping](#bootstrapping) section below before attempting to build images for any provider.
 
@@ -201,7 +201,7 @@ artifact=${vm_name}-${version}_${build}
 
 The build of an artifact for use in a cloud environment start with a Packer's template, which in turn will first use a kickstart to bootstrap the machine and then provision if with Ansible playbooks and shell scripts. The end result will produce an artifact that can be deployed to the target cloud environment.
 
-## Packer templates
+## Packer Templates
 
 A standard Packer's JSON template for parallel generation of artifacts for different cloud providers is located in the `templates/main.json` alongside with a site specific template in `templates/site.json` and OS specific templates in directory `templates/os` (ie `CentOS-7.2.1511.json`).
 
@@ -215,18 +215,18 @@ The main templates will bootstrap artifacts for multiple providers, usually prov
 
 As any other Packer template, `templates/main.json` is divided in:
 - builders: on builder per provider, each declaring how to build the provider. All depend on a local HTTP server to access the kickstart files (see [Kickstarts](#kickstarts)).
-- provisioners: all execute two provisioners, the first one using Ansible to provision the image (see [Ansible playbooks](#ansible-playbooks)), and another calling two shell scripts to clean up the image (see [Cleanup shell scripts](#cleanup-shell-scripts)).
-- post-processors: some providers need post-processors to convert artifacts to the appropiate format. See [Post-processors](#post-processors) for a list of the dependencies required.
+- provisioners: all execute two provisioners, the first one using Ansible to provision the image (see [Ansible Playbooks](#ansible-playbooks)), and another calling two shell scripts to clean up the image (see [Cleanup Shell Scripts](#cleanup-shell-scripts)).
+- post-processors: some providers need post-processors to convert artifacts to the appropriate format. See [Post-processors](#post-processors) for a list of the dependencies required.
 
 ## Kickstarts
 
 Kickstart files are located in the `http/` directory. The main kickstart file is `ks.php`, and requires a server running php. On a local computer the easiest is to install apache and symlink this directory to `~/public_html`.
 
-### Packer variables
+### Packer Variables
 
 Packer site variables variables defined in `templates/site.json` and OS variables defined in `templates/os` are available in the kickstart in php objects `packer_site` and `packer_os`. Note that variables defined in the command line while running packer are not reflected here. Currently only `packer_os['os_version']` is used (see below).
 
-### Build types
+### Build Types
 
 The kickstart system is divided in multiple files that get included depending on the variables defined the build type and build files for the specified server (found in `builds/`). All Packer templates will use definitions found in `builds/virtual` while bare metal servers will look for definition files in `build/metal`. Different kickstart sections get included for metal or virtual builds appropriately. URLs to target different servers are in the form of `http://server.domain:port/ks.php?build=buildtype/build`, where `buildtype` is `virtual` or `metal` and `build` is a specific build or host (with default values if `build` is not found). If buildtype is not defined, `virtual` is used.
 
@@ -236,7 +236,7 @@ Multiple OS (and OS version) are supported by passing `os=name-version` to the s
 
 The URL for the repository is picked up from the packer template variables (see above).
 
-### First boot options
+### First Boot Options
 
 Builders using a kickstart pass the following boot options:
 - `selinux=0` will disable selinux.
@@ -244,15 +244,15 @@ Builders using a kickstart pass the following boot options:
 The customized kickstart also understands the following options:
 - `EJECT` will eject the first cd/dvd drive. This is mainly use in bare metal outside of Packer.
 
-## Ansible playbooks
+## Ansible Playbooks
 
 Each builder will provision the image by running Ansbile playbook `ansible/site.yml`, which in turns runs base tasks from `ansible/base.yml` (common to all builders), and then builder specific tasks based on the build name, ie `ansible/aws.yml`.
 
-Packer site and OS specific variables are available to Ansible tasks. Site variables (see `templates/site.json`) are passed as Ansible command line variables and prefixed with `packer_` (ie `packer_namespace`). These variables are also reflected in Ansible if overrided as Packer's command line options. OS specific variables in `templates/os` are imported into object `packer_os` at the start of the main playbook (ie `packer_os.repo_server`) and are not reflected in Ansible if overriden as Packer's command line options.
+Packer site and OS specific variables are available to Ansible tasks. Site variables (see `templates/site.json`) are passed as Ansible command line variables and prefixed with `packer_` (ie `packer_namespace`). These variables are also reflected in Ansible if overridden as Packer's command line options. OS specific variables in `templates/os` are imported into object `packer_os` at the start of the main playbook (ie `packer_os.repo_server`) and are not reflected in Ansible if overridden as Packer's command line options.
 
 The structure of these playbooks might not conform to best practices due to the specificity of this projects. In particular, tasks are used directly instead of roles. Tasks (as well as templates and files) are shared among all playbooks to better maintain consistency among generated artifacts. Note that idempotency is not key when running Ansible in this project because a playbook is only run once.
 
-## Cleanup shell scripts
+## Cleanup Shell Scripts
 
 Several shell scripts located in `scripts/` are run by each template to clean up the images:
 - `cleanup.up` remove caches and sessions.
@@ -281,12 +281,12 @@ Following is a tree of files compromising the system along with a brief descript
 |   |           |-- CentOS-7.2.1511-0.0.0_aws.ova   Template specific artifact
 |   |           |-- CentOS-7.2.1511-0.0.0_aws.box   Vagrant box for debugging purposes
 |   |           `-- ...                             Other files might be generated. Artifacts are not kept in VC
-|   `-- CentOS-7.2.1511.json.example              Exampe for vagrant boxes catalog metadata (one per OS)
+|   `-- CentOS-7.2.1511.json.example              Example for vagrant boxes catalog metadata (one per OS)
 |-- http/                                         HTTP server directory for Packer and metal PXE
 |   |-- ks.php                                    Kickstart entry point
 |   |-- includes/                                 Kickstart include files
 |   |   |-- header.php                            Parse incoming URL and set settings
-|   |   |-- repo.php                              Repositoy URLs for OSs
+|   |   |-- repo.php                              Repository URLs for OSs
 |   |   |-- metal/                                Metal specific Kickstart settings
 |   |   |   |-- disk.php
 |   |   |   |-- network.php
@@ -306,7 +306,7 @@ Following is a tree of files compromising the system along with a brief descript
 |       |   |-- defaults.php                      Default options for metal hosts
 |       |   `-- {host1,...}.php                   Options for specific hosts
 |       `-- packer/
-|           |-- vars.php                          Read packer variables
+|           |-- vars.php                          Import packer site and OS variables into php
 |           |-- site.json ->                      Link to packer's templates/site.json
 |           `-- templates/os/ ->                  Link to packer's templates/os
 |-- keys/                                         SSH keys [!VC]
@@ -353,9 +353,9 @@ ssh-keygen -t rsa -b 2048 -N "" -C "vagrant" -f keys/vagrant
 
 ### Ansible
 
-[Ansible](https://www.ansible.com) is used to provision the builds in a standarized way. Most distributions have packages available for Ansible. Alternatevely you can also clone the git repository at git://github.com/ansible/ansible.git (see http://docs.ansible.com/ansible/intro_installation.html for more information).
+[Ansible](https://www.ansible.com) is used to provision the builds in a standardized way. Most distributions have packages available for Ansible. Alternatively you can also clone the git repository at git://github.com/ansible/ansible.git (see http://docs.ansible.com/ansible/intro_installation.html for more information).
 
-## Build types
+## Build Types
 
 Different built types need different tools installed.
 
@@ -409,7 +409,7 @@ Download Vagrant from https://www.vagrantup.com/downloads.html.
 
 ## Post-processors
 
-Providers might need some post-processing to convert artifacts to the appropiate format. The following is a list of dependencies.
+Providers might need some post-processing to convert artifacts to the appropriate format. The following is a list of dependencies.
 
 ### qemu-img
 
@@ -417,7 +417,7 @@ qemu-img is used to convert the Packer artifacts for the `azure` and `gcp` provi
 
 ### ovftool
 
-The Open Virtualization Format Tool (ovftool) is used to convert the Packer artifact for `vmware` from VMX to OVA format, which is needed to upload to VMware servers. Download ovtool from https://code.vmware.com/tool/ovf/4.1.0. Note that you will need to be registered at my.vmware.com. Documentation about ovftool can be found at https://www.vmware.com/support/developer/ovf.
+The Open Virtualization Format Tool (ovftool) is used to convert the Packer artifact for `vmware` from VMX to OVA format, which is needed to upload to VMware servers. Download ovftool from https://code.vmware.com/tool/ovf/4.1.0. Note that you will need to be registered at my.vmware.com. Documentation about ovftool can be found at https://www.vmware.com/support/developer/ovf.
 
 ### virt-tar-out
 
@@ -436,3 +436,32 @@ sha256sum is needed to generate the SHA256 checksums of all files created by Pac
 - Add other options, ie locale, root pass, ...
 - Move files with options to example files
 - Automate vagrant boxes catalog metadata files in artifacts
+
+<!--  LocalWords:  DevOps VirtualBox KVM QEMU kickstarts VMs CentOS
+ -->
+<!--  LocalWords:  Kickstart RedHat ansible aws virtualbox iso qemu
+ -->
+<!--  LocalWords:  microsoft gcp openstack OpenStack vmware VMware VM
+ -->
+<!--  LocalWords:  ie vm json os SHA checksums sha artdir CLI cli cp
+ -->
+<!--  LocalWords:  myawsbucket ec UserBucket img VHD myresourcegroup
+ -->
+<!--  LocalWords:  mystorageaccount config northeurope sku RAGRS jq
+ -->
+<!--  LocalWords:  keyName virt gzip SDK sdk gsutil gcloud uri qcow
+ -->
+<!--  LocalWords:  mygcpbucket Openstackclient openstackclient repo
+ -->
+<!--  LocalWords:  Vagrantfile namespace ovftool kickstart http php
+ -->
+<!--  LocalWords:  provisioners apache symlink html buildtype selinux
+ -->
+<!--  LocalWords:  cd dvd Ansbile idempotency VC yml PXE OSs rootpw
+ -->
+<!--  LocalWords:  passwordless README md readme gitignore keygen rsa
+ -->
+<!--  LocalWords:  kvm webpage virtualenv rc utils VMX libguestfs
+ -->
+<!--  LocalWords:  coreutils TODO
+ -->
