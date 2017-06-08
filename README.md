@@ -167,8 +167,12 @@ artdir=artifacts/${version}/${vm_name}/${build}
 artifact=${vm_name}-${version}_${build}
 
 . ~/python-openstack/bin/activate
-openstack image create --disk-format qcow2 --file $artdir/$artifact.qcow2 --tag packer --protected --public $artifact
+openstack image create --disk-format qcow2 --file $artdir/$artifact.qcow2 --tag packer $artifact
 ```
+
+Add:
+- `--protected` to protect the image from being deleted.
+- `--public` to make it available to other openstack users.
 
 ### VirtualBox (`virtualbox`)
 
