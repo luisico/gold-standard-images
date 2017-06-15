@@ -335,7 +335,7 @@ Following is a tree of files compromising the system along with a brief descript
 
 # Bootstrapping
 
-Before attempting to build images for any provider you should bootstrap the system for your site and have a few tools ready in your system. These would depend on the providers you want to support. Each provider's section above lists the tools needed.
+Before attempting to build images for any provider you should bootstrap the system for your site and have a few tools ready in your system. These would depend on the providers you want to support. Each provider's section above lists the tools needed. Building images can be (and should be) done under a regular non-root user. However, some of the dependencies might need to be installed system wide as the root user.
 
 ## General
 
