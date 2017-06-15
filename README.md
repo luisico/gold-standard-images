@@ -224,7 +224,7 @@ As any other Packer template, `templates/main.json` is divided in:
 
 ## Kickstarts
 
-Kickstart files are located in the `http/` directory. The main kickstart file is `ks.php`, and requires a server running php. On a local computer the easiest is to install apache and symlink this directory to `~/public_html`.
+Kickstart files are located in the `http/` directory. The main kickstart file is `ks.php`, and requires a server running PHP (see [Kickstart server](#kickstart-server)).
 
 ### Packer Variables
 
@@ -358,6 +358,10 @@ ssh-keygen -t rsa -b 2048 -N "" -C "vagrant" -f keys/vagrant
 ### Ansible
 
 [Ansible](https://www.ansible.com) is used to provision the builds in a standardized way. Most distributions have packages available for Ansible. Alternatively you can also clone the git repository at git://github.com/ansible/ansible.git (see http://docs.ansible.com/ansible/intro_installation.html for more information).
+
+### Kickstart server
+
+You need an HTTP server with PHP support to serve the kickstart files found in the `http/` directory. The simplest way is to install `apache` and `php` and configure it to serve the files in `http/`. A simple approach is to configure Apache with `Userdir` activated and adding a symlink to `~/public_html`, ie. `ln -sf /path/to/http ~/public_html/gold_standard_images`.
 
 ## Build Types
 
