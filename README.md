@@ -228,7 +228,7 @@ Kickstart files are located in the `http/` directory. The main kickstart file is
 
 ### Packer Variables
 
-Packer site variables variables defined in `templates/site.json` and OS variables defined in `templates/os` are available in the kickstart in php objects `packer_site` and `packer_os`. Note that variables defined in the command line while running packer are not reflected here. Currently only `packer_os['os_version']` is used (see below).
+Packer site variables variables defined in `templates/site.json` and OS variables defined in `templates/os` are available in the kickstart in PHP objects `packer_site` and `packer_os`. Note that variables defined in the command line while running packer are not reflected here. Currently only `packer_os['os_version']` is used (see below).
 
 ### Build Types
 
@@ -246,7 +246,7 @@ Builders using a kickstart pass the following boot options:
 - `selinux=0` will disable selinux.
 
 The customized kickstart also understands the following options:
-- `EJECT` will eject the first cd/dvd drive. This is mainly use in bare metal outside of Packer.
+- `EJECT` will eject the first CD/DVD drive. This is mainly use in bare metal outside of Packer.
 
 ## Ansible Playbooks
 
@@ -310,7 +310,7 @@ Following is a tree of files compromising the system along with a brief descript
 |       |   |-- defaults.php                      Default options for metal hosts
 |       |   `-- {host1,...}.php                   Options for specific hosts
 |       `-- packer/
-|           |-- vars.php                          Import packer site and OS variables into php
+|           |-- vars.php                          Import packer site and OS variables into PHP
 |           |-- site.json ->                      Link to packer's templates/site.json
 |           `-- templates/os/ ->                  Link to packer's templates/os
 |-- keys/                                         SSH keys [!VC]
