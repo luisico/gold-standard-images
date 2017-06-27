@@ -429,7 +429,7 @@ The Open Virtualization Format Tool (ovftool) is used to convert the Packer arti
 
 ### virt-tar-out
 
-virt-tar-out is used to produce a compress tar file from the Packer artifact for the `docker` provider. [virt-tar-out](http://libguestfs.org/virt-tar-out.1.html) is part of [libguestfs](http://libguestfs.org). Install libguestfs from our package manager or see [here](http://libguestfs.org/guestfs-faq.1.html#binaries) for further instructions.
+virt-tar-out is used to produce a compress tar file from the Packer artifact for the `docker` provider. [virt-tar-out](http://libguestfs.org/virt-tar-out.1.html) is part of [libguestfs](http://libguestfs.org). Install `libguestfs-tools` from your package manager or see [here](http://libguestfs.org/guestfs-faq.1.html#binaries) for further instructions.
 
 ### sha256sum
 
