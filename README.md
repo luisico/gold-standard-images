@@ -82,7 +82,7 @@ The `aws` provider uses the `virtualbox-iso` build type (see [virtualbox-iso](#v
 
 #### Upload
 
-The following instructions assume AWS CLI installed and configured to access your AWS account. In addition a AWS S3 bucket for temporary upload of the image before final import into an AWS image must be already available.
+The following instructions assume AWS CLI installed and configured to access your AWS account. In addition a AWS S3 bucket for temporary upload of the image before final import into an AWS image must be already available. Note that you might also need to configure AWS policies to accept image imports (see http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/VMImportPrerequisites.html#vmimport-service-role).
 
 ``` sh
 build=aws
@@ -91,7 +91,7 @@ artifact=${vm_name}-${version}_${build}
 
 aws_s3_bucket=myawsbucket
 
-cp $artdir/$artifact.ova s3://${aws_s3_bucket}/
+aws s3 cp $artdir/$artifact.ova s3://${aws_s3_bucket}/
 aws ec2 import-image --disk-container "Format=ova,UserBucket={S3Bucket=${aws_s3_bucket},S3Key=$artifact.ova}"
 aws ec2 describe-import-image-tasks
 ```
