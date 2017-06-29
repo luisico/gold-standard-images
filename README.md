@@ -132,8 +132,10 @@ build=docker
 artdir=artifacts/${version}/${vm_name}/${build}
 artifact=${vm_name}-${version}_${build}
 
-docker import $artdir/$artifact.tar.gz $artifact
+docker import $artdir/$artifact.tar.gz ${artifact,,}
 ```
+
+Note that docker images need to be lowercase. The above bash substitution in 'docker import' requires Bash 4+.
 
 ### Google Compute Platform (`gcp`)
 
