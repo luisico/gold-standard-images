@@ -113,12 +113,12 @@ resource_group=myresourcegroup
 storage_account=mystorageaccount
 container=images-container
 
-azure config mode arm
-azure group create -l northeurope $resource_group
-azure storage account create -g $resource_group -l northeurope --kind Storage --sku-name RAGRS $storage_account
-key=$(azure storage account keys list $storage_account -g $resource_group --json | jq -r '.[] | select(.keyName == "key1") | .value')
-azure storage container create -a $storage_account -k $key $container
-azure storage blob upload -t page -a $storage_account -k $key --container $container -f $artdir/$artifact.vhd
+az login
+az group create -l northeurope -n $resource_group
+az storage account create -g $resource_group -l northeurope --kind Storage --sku Standard_RAGRS -n $storage_account
+key=$(az storage account keys list -n $storage_account -g $resource_group --output json | jq -r '.[] | select(.keyName == "key1") | .value')
+az storage container create --account-name $storage_account --account-key $key -n $container
+az storage blob upload -t page --account-name $storage_account --account-key $key -c $container -f $artdir/$artifact.vhd -n $artifact
 ```
 
 ### Docker (`docker`)
