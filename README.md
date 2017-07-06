@@ -121,6 +121,14 @@ az storage container create --account-name $storage_account --account-key $key -
 az storage blob upload -t page --account-name $storage_account --account-key $key -c $container -f $artdir/$artifact.vhd -n $artifact.vhd
 ```
 
+Create a VM image from the uploaded VHD
+
+```
+az disk create -g $resource_group -n $artifact --source https://$storage_account.blob.core.windows.net/$container/$artifact.vhd
+disk=$(az disk list -g $resource_group  --output table --query "[].{Name:name, ID:id}" --output json | jq -r '.[] | select(.Name == "'$artifact'") | .ID')
+az image create --resource-group $resource_group --location northeurope  --name artifact  --os-type linux  --source $disk
+```
+
 ### Docker (`docker`)
 
 The `docker` provider uses the `qemu` build type (see [qemu](#qemu) for dependencies). It also depends on [virt-tar-out](#virt-tar-out) and gzip to convert the artifact into compress tar file, and [Docker](#docker) to import the image.
