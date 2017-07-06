@@ -118,7 +118,7 @@ az group create -l northeurope -n $resource_group
 az storage account create -g $resource_group -l northeurope --kind Storage --sku Standard_RAGRS -n $storage_account
 key=$(az storage account keys list -n $storage_account -g $resource_group --output json | jq -r '.[] | select(.keyName == "key1") | .value')
 az storage container create --account-name $storage_account --account-key $key -n $container
-az storage blob upload -t page --account-name $storage_account --account-key $key -c $container -f $artdir/$artifact.vhd -n $artifact
+az storage blob upload -t page --account-name $storage_account --account-key $key -c $container -f $artdir/$artifact.vhd -n $artifact.vhd
 ```
 
 ### Docker (`docker`)
