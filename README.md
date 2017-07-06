@@ -126,7 +126,7 @@ Create a VM image from the uploaded VHD
 ```
 az disk create -g $resource_group -n $artifact --source https://$storage_account.blob.core.windows.net/$container/$artifact.vhd
 disk=$(az disk list -g $resource_group  --output table --query "[].{Name:name, ID:id}" --output json | jq -r '.[] | select(.Name == "'$artifact'") | .ID')
-az image create --resource-group $resource_group --location northeurope  --name artifact  --os-type linux  --source $disk
+az image create --resource-group $resource_group --location northeurope  --name $artifact  --os-type linux  --source $disk
 ```
 
 ### Docker (`docker`)
