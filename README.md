@@ -454,3 +454,10 @@ sha256sum is needed to generate the SHA256 checksums of all files created by Pac
 - Add other options, ie locale, root pass, ...
 - Move files with options to example files
 - Automate vagrant boxes catalog metadata files in artifacts
+
+Author Information
+------------------
+Luis Gracia while at [EMBL-EBI](http://www.ebi.ac.uk/):
+- luis.gracia [at] ebi.ac.uk
+- GitHub at [luisico](https://github.com/luisico)
+- Galaxy at [luisico](https://galaxy.ansible.com/luisico)
