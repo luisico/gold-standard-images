@@ -455,6 +455,10 @@ sha256sum is needed to generate the SHA256 checksums of all files created by Pac
 - Move files with options to example files
 - Automate vagrant boxes catalog metadata files in artifacts
 
+Licence
+-------
+Released under the [MIT license](https://opensource.org/licenses/MIT).
+
 Author Information
 ------------------
 Luis Gracia while at [EMBL-EBI](http://www.ebi.ac.uk/):
