@@ -246,9 +246,7 @@ The kickstart system is divided in multiple files that get included depending on
 
 ### OS
 
-Multiple OS (and OS version) are supported by passing `os=name-version` to the server, ie `http://server.domain:port/ks.php?os=CentOS-7.2.1511`. Currently this is only used to pass the OS version to kickstart to set the repository url. All Packer templates pass this information.
-
-The URL for the repository is picked up from the packer template variables (see above).
+Multiple OS (and OS version) are supported by passing `os=name-version` in the URL to the kickstart server, ie `http://server.domain:port/ks.php?os=CentOS-7.2.1511`. Currently this is only used to pass the OS version to the kickstart scripts and generate the URL for the repository (see `http/includes/repo.php`).
 
 ### First Boot Options
 
