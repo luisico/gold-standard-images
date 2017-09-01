@@ -4,9 +4,7 @@ cmdline
 
 <?php include "includes/repo.php"; ?>
 
-lang en_GB.UTF-8
-keyboard uk
-timezone Europe/London
+<?php include "includes/locale.php"; ?>
 
 <?php include "includes/$hardware/network.php"; ?>
 
