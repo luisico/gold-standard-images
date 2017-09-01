@@ -1,18 +1,11 @@
 ---
-# Not idempotent: first deletes all repos, then add selected repos
-- block:
-  - name: List all repositories
-    find: paths=/etc/yum.repos.d/ patterns=*.repo
-    register: current_repos
+- name: List all repositories
+  find: paths=/etc/yum.repos.d/ patterns=*.repo
+  register: current_repos
 
-  - name: Remove all repositories
-    file: path={{item.path}} state=absent
-    with_items: '{{current_repos.files}}'
+- name: Remove all repositories
+  file: path={{item.path}} state=absent
+  with_items: '{{current_repos.files}}'
 
-  - name: Add selected repositories
-    yum_repository: file={{item.file | default(omit)}} name={{item.name}} description='{{item.name}}' params='{{item}}'
-    with_items: '{{repos[ansible_distribution][ansible_distribution_version]}}'
-
-  when:
-    - repos[ansible_distribution][ansible_distribution_version] is defined
-    - repos[ansible_distribution][ansible_distribution_version]
+- name: Add installation repository
+  yum_repository: name=packer description=packer enabled=no gpgcheck=no baseurl='{{packer_os.repo_server}}/{{ansible_distribution_version}}/os/$basearch'

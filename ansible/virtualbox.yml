@@ -1,6 +1,6 @@
 ---
 - name: Install virtualbox dependencies
-  yum: name={{item}} state=present
+  yum: name={{item}} state=present enablerepo='*'
   with_items:
     - kernel-devel-{{ansible_kernel}}
     - gcc

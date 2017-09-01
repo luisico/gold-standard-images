@@ -246,7 +246,7 @@ The kickstart system is divided in multiple files that get included depending on
 
 ### OS
 
-Multiple OS (and OS version) are supported by passing `os=name-version` to the server, ie `http://server.domain:port/ks.php?os=CentOS-7.2.1511`. Currently this is only used to pass the OS version to the repositories in `packer_os['os_version']`. All Packer templates pass this information.
+Multiple OS (and OS version) are supported by passing `os=name-version` to the server, ie `http://server.domain:port/ks.php?os=CentOS-7.2.1511`. Currently this is only used to pass the OS version to kickstart to set the repository url. All Packer templates pass this information.
 
 The URL for the repository is picked up from the packer template variables (see above).
 
@@ -283,7 +283,7 @@ Following is a tree of files compromising the system along with a brief descript
 |   |-- base.yml                                  Base tasks common to all Packer builds
 |   |-- aws.yml                                   Specific playbook for each Packer build
 |   |-- group_vars/
-|   |   `-- all.yml                               Variables for all playbooks
+|   |   `-- all.yml                               Variables for all playbooks/artifacts
 |   |-- tasks/                                    Tasks used in playbooks
 |   |-- files/                                    Files used by Ansible tasks
 |   `-- templates/                                Templates used by Ansible tasks

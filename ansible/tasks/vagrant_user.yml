@@ -6,7 +6,7 @@
   user: name=vagrant group=vagrant group=vagrant groups=wheel,adm,systemd-journal password=vagrant state=present
 
 - name: Install sudo
-  yum: name=sudo state=latest
+  yum: name=sudo state=latest enablerepo='*'
 
 - name: Add vagrant to sudoers
   template: dest=/etc/sudoers.d/vagrant src=templates/sudoers.j2 mode=0440 owner=root group=root
