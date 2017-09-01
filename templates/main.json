@@ -9,6 +9,7 @@
     "headless": null,
     "iso_server": null,
     "ks_server": null,
+    "disk_size": "5120",
 
     "__comment": "Set these variables in OS specific templates or command line",
     "vm_name": null,
@@ -27,7 +28,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}",
       "format": "ova",
 
-      "disk_size": "3072",
+      "disk_size": "{{user `disk_size`}}",
 
       "iso_url": "{{user `iso_server`}}/{{user `os_version`}}/isos/x86_64/{{user `iso`}}.iso",
       "iso_checksum_type": "sha256",
@@ -64,7 +65,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
       "format": "qcow2",
 
-      "disk_size": "2048",
+      "disk_size": "{{user `disk_size`}}",
       "disk_interface": "ide",
       "disk_compression": true,
 
@@ -96,7 +97,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
       "format": "qcow2",
 
-      "disk_size": "2048",
+      "disk_size": "{{user `disk_size`}}",
       "disk_interface": "ide",
       "disk_compression": true,
 
@@ -128,7 +129,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
       "format": "qcow2",
 
-      "disk_size": "2048",
+      "disk_size": "{{user `disk_size`}}",
       "disk_interface": "ide",
       "disk_compression": true,
 
@@ -160,7 +161,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}.qcow2",
       "format": "qcow2",
 
-      "disk_size": "3072",
+      "disk_size": "{{user `disk_size`}}",
       "disk_interface": "ide",
       "disk_compression": true,
 
@@ -192,7 +193,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}",
       "format": "ova",
 
-      "disk_size": "5120",
+      "disk_size": "{{user `disk_size`}}",
 
       "iso_url": "{{user `iso_server`}}/{{user `os_version`}}/isos/x86_64/{{user `iso`}}.iso",
       "iso_checksum_type": "sha256",
@@ -228,7 +229,7 @@
       "vm_name": "{{user `vm_name`}}-{{user `version`}}_{{build_name}}",
       "format": "ova",
 
-      "disk_size": "3072",
+      "disk_size": "{{user `disk_size`}}",
 
       "iso_url": "{{user `iso_server`}}/{{user `os_version`}}/isos/x86_64/{{user `iso`}}.iso",
       "iso_checksum_type": "sha256",
