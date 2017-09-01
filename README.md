@@ -455,6 +455,7 @@ sha256sum is needed to generate the SHA256 checksums of all files created by Pac
 - Better description of which variables are set in `site.json`
 - Provide defaults for `site.json` variables in kickstarts and ansible (in case they are not defined in `site.json`)
 - Talk about artifact's size in readme.
+- Document what ansible playbooks do in detail.
 
 Licence
 -------
