@@ -3,7 +3,7 @@ zerombr
 
 <?php
 if ($boot) {
-  echo "part /boot --fstype $fstype --size 150 --ondisk sda\n";
+  echo "part /boot --fstype $fstype --size 400 --ondisk sda\n";
 }
 
 if ($lvm) {
