@@ -221,6 +221,7 @@
         [ "modifyvm", "{{.Name}}", "--audio", "none" ]
       ]
     },
+
     {
       "name": "vmware",
       "type": "vmware-iso",
