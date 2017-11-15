@@ -2,8 +2,13 @@
 - name: Add vagrant group
   group: name=vagrant state=present
 
-- name: Add vagrant user
+- name: Add vagrant user for RedHat 6 systems
+  user: name=vagrant group=vagrant group=vagrant groups=wheel,adm password=vagrant state=present
+  when: ansible_distribution_major_version <= '6'
+
+- name: Add vagrant user for RedHat 7 systems
   user: name=vagrant group=vagrant group=vagrant groups=wheel,adm,systemd-journal password=vagrant state=present
+  when: ansible_distribution_major_version > '6'
 
 - name: Install sudo
   yum: name=sudo state=latest enablerepo='*'
