@@ -26,4 +26,4 @@
   command: grub2-mkconfig -o /boot/grub2/grub.cfg
   when: grub.changed
 
-- include: tasks/cloud_init.yml
+- import_tasks: tasks/cloud_init.yml

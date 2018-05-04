@@ -25,4 +25,4 @@
 - name: Undo yum history
   shell: yum -y history undo last
 
-- include: tasks/vagrant_user.yml
+- import_tasks: tasks/vagrant_user.yml
