@@ -11,7 +11,7 @@ unsupported_hardware
 
 <?php include "includes/rootpw.php"; ?>
 
-authconfig --enableshadow
+authconfig --enableshadow --passalgo sha512
 firewall --enabled --port 22:tcp
 selinux --disabled
 firstboot --disabled
