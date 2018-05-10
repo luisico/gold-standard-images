@@ -21,9 +21,8 @@ The system depends on four inputs, which are well known and maintained:
 
 ## OS
 
-- CentOS 7.2.1511
-- CentOS 7.3.1611
-- RedHat 7.2
+- CentOS 7.x
+- RedHat 7.x
 
 Note that OS name and versions are named after the values reported by `ansible_distribution` and `ansible_distribution_version`.
 
@@ -273,7 +272,6 @@ Several shell scripts located in `scripts/` are run by each template to clean up
 ## Directory Structure
 
 Following is a tree of files compromising the system along with a brief description. To simplify the tree, only `CentOS` is listed here where multiple OS are possible, and only `aws` is listed where multiple builder/providers are possible. Note that items marked with `!VC` are not stored in version control (git). Also, files ending in `.example` will need to be copied into actual files as described in the relevant section in this document and those files should not be stored in version control.
-
 
 ```
 |-- ansible/                                      Ansible playbooks
