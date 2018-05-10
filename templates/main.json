@@ -10,6 +10,7 @@
     "iso_server": null,
     "ks_server": null,
     "disk_size": "5120",
+    "root_pass": null,
 
     "__comment": "Set these variables in OS specific templates or command line",
     "vm_name": null,

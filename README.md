@@ -220,7 +220,7 @@ The build of an artifact for use in a cloud environment start with a Packer's te
 A standard Packer's JSON template for parallel generation of artifacts for different cloud providers is located in the `templates/main.json` alongside with a site specific template in `templates/site.json` and OS specific templates in directory `templates/os` (ie `CentOS-7.2.1511.json`).
 
 The main template declares a set of variables (`user variables` as per Packer). These variables are unset in the main template and instead should be set in the appropriate template (see below). Note that failure to set all variables declared with `null` in the main template will prevent the build process. Variables can also be overridden in command line (see above). Variables are divided into two types:
-- Site specific variables (for example namespace, versions, server urls, disk space and locale info) should be set in `templates/site.json` (an example is provided in `templates/site.json.example`).
+- Site specific variables (for example namespace, versions, server urls, disk space, locale info and root password) should be set in `templates/site.json` (an example is provided in `templates/site.json.example`).
 - OS specific variables (ie `os_name`, `os_version`, `iso` and `iso_checksum`, `iso_server` and `repo_server`). These should be set in the OS specific template under `templates/os` (an example is provided in `templates/os/CentOS-7.2.1511.json.example`).
 
 This setup provides flexibility in the image building process and allows site and os selection.
@@ -299,16 +299,15 @@ Following is a tree of files compromising the system along with a brief descript
 |   |-- includes/                                 Kickstart include files
 |   |   |-- header.php                            Parse incoming URL and set settings
 |   |   |-- repo.php                              Repository URLs for OSs
+|   |   |-- rootpw.php                            Crypted root password
 |   |   |-- metal/                                Metal specific Kickstart settings
 |   |   |   |-- disk.php
 |   |   |   |-- network.php
-|   |   |   |-- post.php
-|   |   |   `-- rootpw.php
+|   |   |   `-- post.php
 |   |   |-- virtual/                              VMs specific Kickstart settings
 |   |   |   |-- disk.php
 |   |   |   |-- network.php
-|   |   |   |-- post.php
-|   |   |   `-- rootpw.php
+|   |   |   `-- post.php
 |   `-- builds/                                   Per build type definitions
 |       |-- defaults.php                          Common defaults for all builds
 |       |-- virtual/

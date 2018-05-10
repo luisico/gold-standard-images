@@ -8,7 +8,7 @@ cmdline
 
 <?php include "includes/$hardware/network.php"; ?>
 
-<?php include "includes/$hardware/rootpw.php"; ?>
+<?php include "includes/rootpw.php"; ?>
 
 authconfig --enableshadow
 firewall --enabled --port 22:tcp
