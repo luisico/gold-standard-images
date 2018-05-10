@@ -1,6 +1,7 @@
 <?php include "includes/header.php"; ?>
 install
 cmdline
+unsupported_hardware
 
 <?php include "includes/repo.php"; ?>
 
