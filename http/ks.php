@@ -23,7 +23,6 @@ reboot
 
 %packages --nobase
 @core
-eject
 man
 openssh-clients
 system-config-firewall-base
