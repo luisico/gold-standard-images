@@ -384,7 +384,7 @@ These builds depends on [VirtualBox](https://www.virtualbox.org). Most distribut
 
 ### vmware-iso
 
-VMware Player or [VMware Workstation](http://www.vmware.com/products/workstation-for-linux.html) is needed for builds that use the `vmware-iso` builder. Note that you might need to be registered at my.vmware.com to download the tools.
+[VMware Workstation](http://www.vmware.com/products/workstation-for-linux.html) or [VMware Player](https://www.vmware.com/products/workstation-player.html)+VMware VIX are needed for builds that use the `vmware-iso` builder. Note that you might need to be registered at https://my.vmware.com to download the tools. VMware VIX can be downloaded from VMware Player's download site by clicking on the "Drivers & Tools" tab.
 
 ## Upload/Import tools
 
