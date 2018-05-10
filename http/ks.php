@@ -18,7 +18,7 @@ firstboot --disabled
 
 bootloader --location mbr --driveorder sda --append "rdblacklist=nouveau nouveau.modeset=0"
 
-<?php include "includes/$hardware/disk.php"; ?>
+<?php include "includes/disk.php"; ?>
 
 reboot
 

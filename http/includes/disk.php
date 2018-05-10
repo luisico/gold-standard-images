@@ -3,7 +3,7 @@ zerombr
 
 <?php
 if ($boot) {
-  echo "part /boot --fstype ext3 --size 1024 --ondisk sda\n";
+  echo "part /boot --fstype ext3 --size $bootsize --ondisk sda\n";
 }
 
 if ($lvm) {
