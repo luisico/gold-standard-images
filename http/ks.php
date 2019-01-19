@@ -1,4 +1,6 @@
 <?php include "includes/header.php"; ?>
+<?php include "includes/$hardware/bootline.php"; ?>
+
 install
 cmdline
 unsupported_hardware
