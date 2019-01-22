@@ -16,8 +16,11 @@ if ($lvm) {
       echo "logvol swap --fstype swap --name swap --vgname ${hostname}_rootvg --size $swapsize\n";
     }
   }
-  echo "logvol / --fstype $fstype --name rootvol --vgname ${hostname}_rootvg --size 1 --grow\n";
-
+  if ($rootsize == "max") {
+    echo "logvol / --fstype $fstype --name rootvol --vgname ${hostname}_rootvg --size 1 --grow\n";
+  } else {
+    echo "logvol / --fstype $fstype --name rootvol --vgname ${hostname}_rootvg --size 1 --grow --maxsize $rootsize\n";
+  }
 } else {
   echo "part / --fstype $fstype --size 1 --grow --ondisk sda\n";
 }
