@@ -382,7 +382,7 @@ These builds depends on [VirtualBox](https://www.virtualbox.org). Most distribut
 
 ### vmware-iso
 
-[VMware Workstation](http://www.vmware.com/products/workstation-for-linux.html) or [VMware Player](https://www.vmware.com/products/workstation-player.html)+VMware VIX are needed for builds that use the `vmware-iso` builder. Note that you might need to be registered at https://my.vmware.com to download the tools. VMware VIX can be downloaded from VMware Player's download site by clicking on the "Drivers & Tools" tab.
+[VMware Workstation](http://www.vmware.com/products/workstation-for-linux.html) or [VMware Player](https://www.vmware.com/products/workstation-player.html)+VMware VIX are needed for builds that use the `vmware-iso` builder. Note that you might need to be registered at https://my.vmware.com to download the tools. VMware VIX can be downloaded from VMware Player's download site by clicking on the "Drivers & Tools" tab. Note that VMWare 6.5+ changed it support for SHA from SHA1 to SHA256. If you are on an older version of VMware, you'll need to change the SHA algorithm `templates/site.json` to produce valid OVA files.
 
 ## Upload/Import tools
 

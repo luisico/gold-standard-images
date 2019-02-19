@@ -8,5 +8,6 @@
   "keyboard":  "us",
   "timezone": "America/New_York",
   "root_pass": "password",
-  "root_salt": "salt"
+  "root_salt": "salt",
+  "vmware_sha": "sha256"
 }
