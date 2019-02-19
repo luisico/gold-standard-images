@@ -11,6 +11,7 @@
     "ks_server": null,
     "disk_size": "5120",
     "root_pass": null,
+    "ssh_timeout": null,
     "vmware_sha": null,
 
     "__comment": "Set these variables in OS specific templates or command line",
@@ -41,7 +42,7 @@
 
       "ssh_username": "root",
       "ssh_password": "packer",
-      "ssh_timeout": "10m",
+      "ssh_timeout": "{{user `ssh_timeout`}}",
 
       "shutdown_command": "shutdown -P now",
 
@@ -77,7 +78,7 @@
 
       "ssh_username": "root",
       "ssh_password": "packer",
-      "ssh_timeout": "10m",
+      "ssh_timeout": "{{user `ssh_timeout`}}",
 
       "shutdown_command": "shutdown -P now",
 
@@ -109,7 +110,7 @@
 
       "ssh_username": "root",
       "ssh_password": "packer",
-      "ssh_timeout": "10m",
+      "ssh_timeout": "{{user `ssh_timeout`}}",
 
       "shutdown_command": "shutdown -P now",
 
@@ -141,7 +142,7 @@
 
       "ssh_username": "root",
       "ssh_password": "packer",
-      "ssh_timeout": "10m",
+      "ssh_timeout": "{{user `ssh_timeout`}}",
 
       "shutdown_command": "shutdown -P now",
 
@@ -173,7 +174,7 @@
 
       "ssh_username": "root",
       "ssh_password": "packer",
-      "ssh_timeout": "10m",
+      "ssh_timeout": "{{user `ssh_timeout`}}",
 
       "shutdown_command": "shutdown -P now",
 
@@ -206,7 +207,7 @@
 
       "ssh_username": "root",
       "ssh_password": "packer",
-      "ssh_timeout": "10m",
+      "ssh_timeout": "{{user `ssh_timeout`}}",
 
       "shutdown_command": "shutdown -P now",
 
@@ -243,7 +244,7 @@
 
       "ssh_username": "root",
       "ssh_password": "packer",
-      "ssh_timeout": "10m",
+      "ssh_timeout": "{{user `ssh_timeout`}}",
 
       "shutdown_command": "shutdown -P now",
 

@@ -9,5 +9,6 @@
   "timezone": "America/New_York",
   "root_pass": "password",
   "root_salt": "salt",
+  "ssh_timeout": "10m",
   "vmware_sha": "sha256"
 }
