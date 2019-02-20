@@ -1,17 +1,22 @@
-<?php include "includes/header.php"; ?>
-<?php include "includes/$hardware/bootline.php"; ?>
+<?php
+require "includes/header.php";
+
+if (file_exists("includes/$hardware/bootline.php")) {
+  include "includes/$hardware/bootline.php";
+}
+?>
 
 install
 cmdline
 unsupported_hardware
 
-<?php include "includes/repo.php"; ?>
+<?php require "includes/repo.php"; ?>
 
-<?php include "includes/locale.php"; ?>
+<?php require "includes/locale.php"; ?>
 
-<?php include "includes/$hardware/network.php"; ?>
+<?php require "includes/$hardware/network.php"; ?>
 
-<?php include "includes/rootpw.php"; ?>
+<?php require "includes/rootpw.php"; ?>
 
 authconfig --enableshadow --passalgo sha512
 firewall --enabled --port 22:tcp
@@ -20,7 +25,7 @@ firstboot --disabled
 
 bootloader --location mbr --driveorder sda --append "rdblacklist=nouveau nouveau.modeset=0"
 
-<?php include "includes/disk.php"; ?>
+<?php require "includes/disk.php"; ?>
 
 reboot
 
@@ -32,5 +37,5 @@ system-config-firewall-base
 %end
 
 %post
-<?php include "includes/$hardware/post.php" ?>
+<?php require "includes/$hardware/post.php" ?>
 %end
