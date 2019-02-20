@@ -430,7 +430,7 @@ qemu-img is used to convert the Packer artifacts for the `azure` and `gcp` provi
 
 ### ovftool
 
-The Open Virtualization Format Tool (ovftool) is used to convert the Packer artifact for `vmware` from VMX to OVA format, which is needed to upload to VMware servers. Download ovftool from https://code.vmware.com/tool/ovf/4.1.0. Note that you will need to be registered at my.vmware.com. Documentation about ovftool can be found at https://www.vmware.com/support/developer/ovf.
+The Open Virtualization Format Tool (ovftool) is used to convert the Packer artifact for `vmware` from VMX to OVA format, which is needed to upload to VMware servers. Note that you will need to be registered at my.vmware.com to download ovftool. Follow these links to [download](https://code.vmware.com/tool/ovf) and access the [documentation](https://www.vmware.com/support/developer/ovf).
 
 ### virt-tar-out
 
