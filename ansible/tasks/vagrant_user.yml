@@ -21,4 +21,6 @@
   template: dest=/etc/sudoers.d/vagrant_requiretty src=templates/sudoers_requiretty.j2 mode=0440 owner=root group=root
   with_items: ['vagrant']
 
-- include_tasks: ssh_keys.yml user=vagrant
+- include_tasks: ssh_keys.yml
+  vars:
+    user: vagrant
