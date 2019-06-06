@@ -11,7 +11,7 @@
   when: ansible_distribution_major_version > '6'
 
 - name: Install sudo
-  yum: name=sudo state=latest enablerepo='*'
+  yum: name=sudo
 
 - name: Add vagrant to sudoers
   template: dest=/etc/sudoers.d/vagrant src=templates/sudoers.j2 mode=0440 owner=root group=root
