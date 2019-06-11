@@ -24,5 +24,7 @@
 
 - name: Undo yum history
   shell: yum -y history undo last
+  args:
+    warn: no
 
 - import_tasks: tasks/vagrant_user.yml
