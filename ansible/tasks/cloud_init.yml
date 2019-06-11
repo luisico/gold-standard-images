@@ -3,7 +3,6 @@
   yum:
     name:
       - cloud-init
-      - cloud-utils
       - cloud-utils-growpart
     state: latest
 
