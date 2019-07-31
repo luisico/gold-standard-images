@@ -1,3 +1,4 @@
+ignoredisk --only-use sda
 clearpart --drives sda --all --initlabel
 zerombr
 
