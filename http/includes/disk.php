@@ -3,6 +3,9 @@ clearpart --drives sda --all --initlabel
 zerombr
 
 <?php
+if ($efi) {
+  echo "part /boot/efi --fstype efi --size 20 --maxsize 512 --grow\n";
+}
 if ($boot) {
   echo "part /boot --fstype ext3 --size $bootsize --ondisk sda\n";
 }
