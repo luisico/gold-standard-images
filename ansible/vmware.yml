@@ -8,3 +8,5 @@
 - import_tasks: tasks/grub.yml
   vars:
     grub_add: ['ds=nocloud-net']
+
+- import_tasks: tasks/cloud_init.yml
