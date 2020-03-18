@@ -1,0 +1,16 @@
+---
+- command: sed -n 's/GRUB_CMDLINE_LINUX="\(.*\)"/\1/p' /etc/default/grub
+  register: grub_cmdline
+  changed_when: false
+
+- name: Update grub
+  lineinfile: dest=/etc/default/grub regexp='^{{item.key}}' line='{{item.key}}="{{grub_cmdline.stdout.split() | union(item.add) | difference(item.del) | join(" ")}}"' owner=root group=root mode=0644
+  with_items:
+    - key: GRUB_CMDLINE_LINUX
+      add: '{{grub_add | default([])}}'
+      del: '{{grub_del | default([])}}'
+  register: grub
+
+- name: Regenerate grub configuration
+  command: grub2-mkconfig -o /boot/grub2/grub.cfg
+  when: grub.changed
