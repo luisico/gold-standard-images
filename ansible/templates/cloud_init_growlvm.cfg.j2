@@ -1,0 +1,9 @@
+---
+growpart:
+  mode: growpart
+  devices:
+    - {{grow_pv}}
+
+runcmd:
+  - if lvs {{grow_vg}}; then cloud-init-per once pvresize pvresize {{grow_pv}}; fi
+  - if lvs {{grow_vg}}; then cloud-init-per once lvextend lvextend -l +100%FREE --resize /dev/{{grow_vg}}/{{grow_lv}}; fi
