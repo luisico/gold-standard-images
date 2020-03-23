@@ -11,3 +11,7 @@ system_info:
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     shell: /bin/bash
   distro: rhel
+
+{% if cloud_init_config is defined and cloud_init_config %}
+{{cloud_init_config | to_nice_yaml(indent=2)}}
+{% endif %}
