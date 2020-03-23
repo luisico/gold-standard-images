@@ -10,6 +10,9 @@
     grub_add: ['ds=nocloud-net']
 
 - import_tasks: tasks/cloud_init.yml
+  vars:
+    cloud_init_config:
+      users: []
 
 - name: Grow LVM partition with cloud-init
   template: dest=/etc/cloud/cloud.cfg.d/01_growlvm.cfg src=templates/cloud_init_growlvm.cfg.j2 mode=0644 owner=root group=root
