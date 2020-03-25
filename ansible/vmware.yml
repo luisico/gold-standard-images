@@ -13,6 +13,7 @@
   vars:
     cloud_init_config:
       users: []
+      ssh_pwauth: unchanged
 
 - name: Grow LVM partition with cloud-init
   template: dest=/etc/cloud/cloud.cfg.d/01_growlvm.cfg src=templates/cloud_init_growlvm.cfg.j2 mode=0644 owner=root group=root
