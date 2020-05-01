@@ -1,10 +1,18 @@
 ---
+- name: Install CloudInit and EPEL repos
+  yum:
+    name:
+      - 'https://copr-be.cloud.fedoraproject.org/results/%40cloud-init/el-stable/epel-7-x86_64/01081276-cloud-init-el-release/cloud-init-el-release-7-1.noarch.rpm'
+      - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
+
 - name: Install CloudInit
   yum:
     name:
       - cloud-init
       - cloud-utils-growpart
     state: latest
+    enablerepo: group_cloud-init-el-testing
 
 - name: Configure CloudInit
   template: dest=/etc/cloud/cloud.cfg.d/50_local.cfg src=templates/cloud_init_local.cfg.j2 mode=0644 owner=root group=root
