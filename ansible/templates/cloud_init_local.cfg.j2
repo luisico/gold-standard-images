@@ -12,6 +12,6 @@ system_info:
     shell: /bin/bash
   distro: rhel
 
-{% if cloud_init_config is defined and cloud_init_config %}
-{{cloud_init_config | to_nice_yaml(indent=2)}}
+{% if cloud_init_local_config is defined and cloud_init_local_config %}
+{{cloud_init_local_config | to_nice_yaml(indent=2)}}
 {% endif %}
