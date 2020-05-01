@@ -5,10 +5,6 @@
 - name: Start vmtoolsd service
   service: name=vmtoolsd state=started enabled=yes
 
-- import_tasks: tasks/grub.yml
-  vars:
-    grub_add: ['ds=nocloud-net']
-
 - import_tasks: tasks/cloud_init.yml
   vars:
     cloud_init_config:
