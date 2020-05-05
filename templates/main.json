@@ -328,10 +328,15 @@
       "only": ["vmware"],
       "keep_input_artifact": true,
       "environment_vars": [
+        "VENDOR={{user `site`}}",
+        "PRODUCT={{user `vm_name`}}",
+        "VERSION={{user `version`}}",
         "OUTDIR=artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}",
         "OUTNAME={{user `vm_name`}}-{{user `version`}}_{{build_name}}"
       ],
-      "inline": ["ovftool --quiet --name=$OUTNAME --diskMode=thin --vCloudTemplate --compress=1 --shaAlgorithm={{user `vmware_sha`}} $OUTDIR/$OUTNAME.vmx $OUTDIR/$OUTNAME.ova"]
+      "scripts": [
+        "scripts/ovfenv.sh"
+      ]
     },
 
     {
