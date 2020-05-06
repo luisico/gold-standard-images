@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if lvs {{grow_vg}}; then
+  pvresize {{grow_pv}}
+  lvextend -l +100%FREE --resize /dev/{{grow_vg}}/{{grow_lv}}
+fi
