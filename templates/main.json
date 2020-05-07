@@ -347,6 +347,7 @@
 
     {
       "type": "vagrant",
+      "except": ["vmware"],
       "keep_input_artifact": true,
       "output": "artifacts/{{user `version`}}/{{user `vm_name`}}/{{build_name}}/{{user `vm_name`}}-{{user `version`}}_{{build_name}}.box"
     },
