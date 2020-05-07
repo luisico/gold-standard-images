@@ -9,6 +9,7 @@
   vars:
     cloud_init_local_config:
       users: []
+      disable_root: 'False'
       ssh_pwauth: unchanged
 
 - name: Grow LVM partition with cloud-init
