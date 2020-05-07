@@ -239,6 +239,7 @@
       "iso_checksum_type": "sha256",
       "iso_checksum": "{{user `iso_checksum`}}",
 
+      "version": "11",
       "guest_os_type": "rhel7-64",
       "tools_upload_flavor": "",
 
@@ -258,6 +259,11 @@
         "numvcpus": "1",
         "cpuid.coresPerSocket": "1",
         "ethernet0.pciSlotNumber": "32"
+      },
+
+      "vmx_data_post": {
+        "vcpu.hotadd": "TRUE",
+        "mem.hotadd": "TRUE"
       }
     }
   ],
