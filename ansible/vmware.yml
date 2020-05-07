@@ -8,7 +8,6 @@
 - import_tasks: tasks/cloud_init.yml
   vars:
     cloud_init_local_config:
-      users: []
       disable_root: 'False'
       ssh_pwauth: unchanged
 
