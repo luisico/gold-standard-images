@@ -33,6 +33,7 @@ if ($_GET['build']) {
 // OS (overwrite defaults)
 if ($_GET['os']) {
   list($os_name, $os_version) = explode('-', $_GET['os'], 2);
+  list($os_version_major, $os_version_minor, $os_version_patch) = explode('.', $os_version, 3);
 }
 
 // Set hostname and domain
