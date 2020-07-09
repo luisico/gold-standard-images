@@ -6,6 +6,8 @@
       - gcc
       - perl
       - bzip2
+      - tar
+      - elfutils-libelf-devel
 
 - name: Mount guest additions iso
   mount: name=/mnt src=/tmp/VBoxGuestAdditions.iso opts=loop,ro fstype=iso9660 state=mounted
