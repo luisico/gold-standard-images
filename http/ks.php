@@ -37,12 +37,21 @@ bootloader --location mbr --driveorder sda --append "rdblacklist=nouveau nouveau
 
 reboot
 
-%packages --nobase
-@core
-man
-openssh-clients
-system-config-firewall-base
-%end
+<?php
+if ($os_version_major < 8) {
+  echo "%packages --nobase\n";
+  echo "@core\n";
+  echo "man\n";
+  echo "openssh-clients\n";
+  echo "system-config-firewall-base\n";
+  echo "%end\n";
+} else {
+  echo "%packages\n";
+  echo "@^minimal-environment\n";
+  echo "kexec-tools\n";
+  echo "%end\n";
+}
+?>
 
 %post
 <?php require "includes/$hardware/post.php" ?>
