@@ -8,7 +8,11 @@ if (file_exists("includes/$hardware/bootline.php")) {
 
 install
 cmdline
-unsupported_hardware
+<?php
+if ($os_version_major < 8) {
+  echo "unsupported_hardware\n";
+}
+?>
 
 <?php require "includes/repo.php"; ?>
 
