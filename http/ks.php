@@ -6,10 +6,10 @@ if (file_exists("includes/$hardware/bootline.php")) {
 }
 ?>
 
-install
 cmdline
 <?php
 if ($os_version_major < 8) {
+  echo "install\n";
   echo "unsupported_hardware\n";
 }
 ?>
