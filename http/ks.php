@@ -22,7 +22,11 @@ if ($os_version_major < 8) {
 
 <?php require "includes/rootpw.php"; ?>
 
-authconfig --enableshadow --passalgo sha512
+<?php
+if ($os_version_major < 8) {
+  echo "authconfig --enableshadow --passalgo sha512\n";
+}
+?>
 firewall --enabled --port 22:tcp
 selinux --disabled
 firstboot --disabled
