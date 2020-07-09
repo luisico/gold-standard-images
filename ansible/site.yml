@@ -8,7 +8,7 @@
         file: ../templates/os/{{ansible_distribution}}-{{ansible_distribution_version}}.json
 
     # Common tasks to all builds
-    - import_tasks: tasks/repos.yml
+    # - import_tasks: tasks/repos.yml
     - import_tasks: tasks/config_sshd.yml
     - include_tasks: tasks/random_password.yml
       vars:
