@@ -24,8 +24,6 @@ The system depends on four inputs, which are well known and maintained:
 - CentOS 7.x
 - RedHat 7.x
 
-Note that OS name and versions are named after the values reported by `ansible_distribution` and `ansible_distribution_version`.
-
 ## Providers
 
 This is the list of supported providers by build name (Packer's build type in parenthesis):

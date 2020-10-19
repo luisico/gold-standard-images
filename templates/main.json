@@ -279,7 +279,8 @@
         "-e packer_build_name={{build_name}}",
         "-e packer_namespace={{user `namespace`}}",
         "-e packer_version={{user `version`}}",
-        "-e packer_ks_server={{user `ks_server`}}"
+        "-e packer_ks_server={{user `ks_server`}}",
+        "-e packer_template={{user `vm_name`}}.json"
       ]
     },
     {
